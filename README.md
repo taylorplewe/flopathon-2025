@@ -41,17 +41,25 @@ Each team should follow these steps to contribute:
 git checkout -b team-name
 ```
 
-2. Add your own route in `src/router/index.js`
+2. Rename the example route in `src/router/index.js` to match your team name
 
 ```js
-// Example of adding a new route
+// Change this route to match your team name
 {
-  path: '/your-team-name',
-  name: 'yourTeamName',
-  component: () => import('../components/YourTeamComponent.vue'),
+  path: '/example', // Change to your team name (e.g., '/team-awesome')
+  name: 'example',   // Change to your team name (e.g., 'teamAwesome')
+  component: () => import('../components/RenameMe.vue'), // Update this path if you rename the component
 }
 ```
 
-3. Create your team's Vue component in `src/components/`
+3. Rename the file of the example component in `src/components/`
 
-4. Submit a pull request when your feature is complete
+4. Update the RouterLink in `src/App.vue` to point to your team's page
+
+```vue
+<!-- Change this RouterLink to match your team name -->
+<RouterLink to="/example">Example</RouterLink>
+<!-- Change to your team name -->
+```
+
+5. Open a pull request so we can merge them all in for presenting.
