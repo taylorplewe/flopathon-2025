@@ -1,12 +1,18 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
+
+// Get all routes from the router to dynamically generate navigation
+const router = useRouter()
+const routes = router.options.routes
 </script>
 
 <template>
   <header>
     <nav class="main-nav">
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/example">Change This</RouterLink>
+      <!-- Dynamically render router links for all routes -->
+      <RouterLink v-for="route in routes" :key="route.name" :to="route.path">
+        {{ route.meta?.displayName || route.name }}
+      </RouterLink>
     </nav>
   </header>
 

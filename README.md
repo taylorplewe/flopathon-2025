@@ -41,25 +41,41 @@ Each team should follow these steps to contribute:
 git checkout -b team-name
 ```
 
-2. Rename the example route in `src/router/index.js` to match your team name
+2. Create a new Vue component file in `src/components/` with your team name
 
-```js
-// Change this route to match your team name
-{
-  path: '/example', // Change to your team name (e.g., '/team-awesome')
-  name: 'example',   // Change to your team name (e.g., 'teamAwesome')
-  component: () => import('../components/RenameMe.vue'), // Update this path if you rename the component
-}
+```sh
+# Example: Create a file named TeamAwesome.vue in the components directory
+touch src/components/TeamAwesome.vue
 ```
 
-3. Rename the file of the example component in `src/components/`
+3. The routes and navigation dynamically generated!
 
-4. Update the RouterLink in `src/App.vue` to point to your team's page
+   - Routes are automatically created based on the component filename
+   - A route for `TeamAwesome.vue` will be `/team-awesome`
+   - Navigation links are automatically added to the header
 
-```vue
-<!-- Change this RouterLink to match your team name -->
-<RouterLink to="/example">Example</RouterLink>
-<!-- Change to your team name -->
-```
+4. Implement your volume selector UI in your component
 
 5. Open a pull request so we can merge them all in for presenting.
+
+### How the Dynamic Routing Works
+
+- Any `.vue` file in the `src/components/` directory (except HomeView.vue) will automatically get:
+  - A route based on the kebab-case version of the filename (e.g., `TeamAwesome.vue` → `/team-awesome`)
+  - A navigation link in the header with spaces between words (e.g., `TeamAwesome` → `Team Awesome`)
+- No manual route configuration needed
+- No need to modify `App.vue` or `router/index.js`
+
+## Prompt
+
+You will be creating a UI component to select a value for the volume of a piece of media. You do not have to make the component actually change the volume of a `<video>` or `<audio>` tag, just a UI that provides some way of selecting a value between 1-100. Whether it be actually possible, eventually possible, or only theoretically possible it doesn't matter.
+
+## Judging Criteria
+
+To quote Kwan's message in #prod-dev-announcements, the categories are as follows:
+
+**Most Hated:** Can you craft something so frustrating it makes users scream? Show us your worst!
+
+**Hardest to Use:** Simplicity is for suckers! Let's see your labyrinthine layouts!
+
+**People's Choice:** The crowd decides which "flop" truly stole their hearts (and perhaps their sanity)!
