@@ -1,20 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// Dynamically import all Vue components from the components directory
-// This uses Vite's feature to import multiple modules at once
 const componentFiles = import.meta.glob('../components/*.vue')
 
-// Generate routes dynamically from component files
 const dynamicRoutes = Object.keys(componentFiles)
   .map((path) => {
-    // Extract component name from path (e.g., "../components/TeamName.vue" -> "TeamName")
     const componentName = path.split('/').pop().replace('.vue', '')
 
-    // Skip HomeView as it has a special route
     if (componentName === 'HomeView') return null
 
-    // Convert component name to route path (e.g., "TeamName" -> "/team-name")
-    // This follows standard kebab-case URL convention
     const routePath = '/' + componentName.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
 
     return {
@@ -28,7 +21,6 @@ const dynamicRoutes = Object.keys(componentFiles)
   })
   .filter((route) => route !== null)
 
-// Create the router with home route and dynamic routes
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -40,7 +32,6 @@ const router = createRouter({
         displayName: 'Home',
       },
     },
-    // Spread the dynamically generated routes
     ...dynamicRoutes,
   ],
 })
