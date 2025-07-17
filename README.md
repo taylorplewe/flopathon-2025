@@ -41,12 +41,7 @@ Each team should follow these steps to contribute:
 git checkout -b team-name
 ```
 
-2. Create a new Vue component file in `src/components/` with your team name
-
-```sh
-# Example: Create a file named TeamAwesome.vue in the components directory
-touch src/components/TeamAwesome.vue
-```
+2. Rename the Vue component "RenameMe.vue" in `src/components/` with your team name
 
 3. The routes and navigation dynamically generated!
 
