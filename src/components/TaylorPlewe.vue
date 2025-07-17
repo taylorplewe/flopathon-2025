@@ -119,7 +119,8 @@ onUnmounted(() => {
         left: 0;
         transform-origin: left;
         translate: 0 -50%;
-        background-color: black;
+        background-color: #aaa;
+        box-shadow: inset 0 0 0 2px #777;
         & > img {
             width: 100%;
         }
