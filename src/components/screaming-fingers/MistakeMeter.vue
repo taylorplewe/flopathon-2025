@@ -2,33 +2,30 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  mistakes: Number,
-  keystrokes: Number,
+	mistakes: Number,
+	keystrokes: Number,
 })
 
-const mistakeRate = computed(() => {
-  return props.keystrokes === 0 ? 0 : props.mistakes / props.keystrokes
-})
-
-const meterHeight = computed(() => `${mistakeRate.value * 100}%`)
+const meterHeight = computed(() => `${props.mistakes}%`)
 </script>
 
 <template>
-  <div class="mistake-meter">
-    <div class="fill" :style="{ height: meterHeight }"></div>
-  </div>
+	<div class="mistake-meter">
+		<div class="meter-fill" :style="{ height: meterHeight }"></div>
+	</div>
 </template>
 
 <style scoped>
 .mistake-meter {
-  height: 200px;
-  width: 20px;
-  background: linear-gradient(to top, red, yellow, green);
-  border: 2px solid black;
+	height: 200px;
+	width: 20px;
+	border: 2px solid black;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end; /* Align fill at the bottom */
 }
-.fill {
-  width: 100%;
-  background-color: rgba(0,0,0,0.2);
-  transition: height 0.2s;
+.meter-fill {
+	width: 100%;
+	background: linear-gradient(to top, transparent,green, yellow, red); /* Gradient flows upward */
 }
 </style>

@@ -1,104 +1,134 @@
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import MistakeMeter from './MistakeMeter.vue'
 import VolumeDisplay from './VolumeSlider.vue'
 
-const typingAudio = [
-  new Audio('../../../public/sounds/typing/big-hit.mp3'),
-  new Audio('../../../public/sounds/typing/censor.mp3'),
-  new Audio('../../../public/sounds/typing/click.mp3'),
-  new Audio('../../../public/sounds/typing/creaking.mp3'),
-  new Audio('../../../public/sounds/typing/glass.mp3'),
-  new Audio('../../../public/sounds/typing/hit.mp3'),
-  new Audio('../../../public/sounds/typing/horn.mp3'),
-  new Audio('../../../public/sounds/typing/needle.mp3'),
-  new Audio('../../../public/sounds/typing/pipe.mp3'),
-  new Audio('../../../public/sounds/typing/pop.mp3'),
-  new Audio('../../../public/sounds/typing/rise.mp3'),
-  new Audio('../../../public/sounds/typing/snap.mp3'),
-  new Audio('../../../public/sounds/typing/surprise.mp3'),
-  new Audio('../../../public/sounds/typing/thriller.mp3'),
-  new Audio('../../../public/sounds/typing/violin.mp3'),
-  new Audio('../../../public/sounds/typing/whistle.mp3'),
-]
+const props = defineProps({
+	typingAudio: Array
+})
+
+const typingVolume = ref(0.1)
 const words = ref([])
 const input = ref('')
-const currentWordIndex = ref(0)
 const mistakes = ref(0)
 const keystrokes = ref(0)
 const startTime = ref(null)
 const backgroundColor = ref('#fff')
+const remainingTime = ref(10)
+const timerInterval = ref(null)
+const loading = ref(true)
+const audioLoaded = ref(false)
+
+function checkAudioLoaded(audioSources) {
+	let loadedCount = 0
+	audioSources.forEach((source) => {
+		const audio = new Audio(source)
+		audio.preload = 'auto'
+
+		audio.addEventListener('canplaythrough', () => {
+			loadedCount++
+			if (loadedCount === audioSources.length) {
+				audioLoaded.value = true
+				loading.value = false
+			}
+		})
+	})
+}
+function startTimer() {
+	remainingTime.value = 10
+	timerInterval.value = setInterval(() => {
+		if (remainingTime.value > 0) {
+			remainingTime.value--
+		} else {
+			clearInterval(timerInterval.value)
+		}
+	}, 1000)
+}
 
 const WPM = computed(() => {
-  if (!startTime.value) return 0
-  const minutes = (Date.now() - startTime.value) / 60000
-  return Math.floor((keystrokes.value / 5) / minutes)
+	if (!startTime.value || isNaN(keystrokes.value)) return 0
+	const minutes = (Date.now() - startTime.value) / 60000
+	if (!minutes || minutes <= 0) return 0
+	const wpm = (keystrokes.value / 5) / minutes
+	return isFinite(wpm) && wpm >= 0 ? Math.floor(wpm) : 0
 })
 
 const successPercentage = computed(() => {
-  const total = keystrokes.value
-  const errorFree = total - mistakes.value
-  return total === 0 ? 0 : Math.max(0, Math.floor((errorFree / total) * 100))
+	const total = keystrokes.value
+	const errorFree = total - mistakes.value
+	return total === 0 ? 0 : Math.max(0, Math.floor((errorFree / total) * 100))
 })
 
 function generateWords() {
-  const sampleWords = ['banana', 'chaos', 'fizz', 'weird', 'nonsense', 'vortex', 'echo', 'taco', 'pogo', 'explode']
-  words.value = Array.from({ length: 10 }, () => sampleWords[Math.floor(Math.random() * sampleWords.length)])
+	const sampleWords = ['banana', 'chaos', 'fizz', 'weird', 'nonsense', 'vortex', 'echo', 'taco', 'pogo', 'explode']
+	words.value = Array.from({ length: 10 }, () => sampleWords[Math.floor(Math.random() * sampleWords.length)])
 }
 
 function handleKeydown(e) {
-  if (e.key === 'Backspace') {
-    // Chaos mode: don't allow it!
-    e.preventDefault()
-    return
-  }
+	console.log("Key pressed:", e.key)
+	flashBackground()
+	playTypingSound()
+	if (e.key === 'Backspace') {
+		e.preventDefault()
+		return
+	}
 
-  const expectedChar = words.value.join(' ')[input.value.length] || ''
-  if (e.key.length === 1) {
-    keystrokes.value++
-    input.value += e.key
+	const expectedChar = words.value.join(' ')[input.value.length] || ''
+	if (e.key.length === 1) {
+		keystrokes.value++
+		input.value += e.key
 
-    if (e.key !== expectedChar) {
-      mistakes.value++
-      playAnnoyingSound()
-      flashBackground()
-    } else {
-      playTypingSound()
-    }
-  }
+		if (e.key !== expectedChar) {
+			mistakes.value++
+		}
+	}
 }
+
+watch(WPM, (newWPM) => {
+	if (newWPM >= 100) {
+		typingVolume.value = 1
+	} else {
+		typingVolume.value = Math.min(1, Math.max(0.1, newWPM / 100))
+	}
+	console.log("WPM changed:", newWPM, "Volume set to:", typingVolume.value)
+})
 
 function flashBackground() {
-  const color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`
-  backgroundColor.value = color
-}
-
-function playAnnoyingSound() {
-	const click = new Audio('../../../public/sounds/typing/glass.mp3')
-	click.volume = Math.min(1, WPM.value / 100)
-	click.play()
+	const color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`
+	backgroundColor.value = color
 }
 
 function playTypingSound() {
-	const randomIndex = Math.floor(Math.random() * typingAudio.length)
-	const sound = typingAudio[randomIndex]
-	sound.volume = 1
+	console.log("Playing typing sound at volume:", typingVolume.value)
+	const randomIndex = Math.floor(Math.random() * props.typingAudio.length)
+	const sound = new Audio(props.typingAudio[randomIndex])
+	console.log("sound", sound)
+	sound.volume = typingVolume.value
 	sound.play()
+	// sound.currentTime = 0 // Reset to start for immediate playback
 }
-
-onMounted(() => {
-  generateWords()
-  startTime.value = Date.now()
-  window.addEventListener('keydown', handleKeydown)
-})
+ onMounted(() => {
+	 generateWords()
+	 startTimer()
+	 startTime.value = Date.now()
+	 document.addEventListener('keydown', handleKeydown)
+	 checkAudioLoaded(props.typingAudio)
+ })
 </script>
 
 <template>
-  <div :style="{ backgroundColor }" class="typing-test">
+  <div v-if="audioLoaded" :style="{ backgroundColor }" class="typing-test">
     <div class="words">{{ words.join(' ') }}</div>
     <input v-model="input" disabled class="invisible-input" />
     <MistakeMeter :mistakes="mistakes" :keystrokes="keystrokes" />
-    <VolumeDisplay :volume="successPercentage" />
+	  <p>Mistake Meter</p>
+	  <div>
+		  <p>Current WPM: {{ WPM }}</p>
+        <VolumeDisplay :volume="successPercentage" />
+	  </div>
+	  <div>
+		  <p>Time Remaining: {{ remainingTime }} seconds</p>
+	  </div>
   </div>
 </template>
 
