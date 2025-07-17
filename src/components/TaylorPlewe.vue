@@ -2,8 +2,11 @@
     <div id="container">
         <div id="crank">
             <div id="center">
+                <img src="../assets/brass-circle.png" alt="center" />
             </div>
-            <div id="bar" ref="bar" :style="`width: ${BAR_LENGTH + 12}px;`"></div>
+            <div id="bar" ref="bar" :style="`width: ${BAR_LENGTH + 12}px;`">
+                <!-- <img src="../assets/crank-arm.png" alt="crank arm" /> -->
+            </div>
             <!-- <div id="handle" ref="handle" style="left: 0; top: 0;" @mousedown="grabHandle"></div> -->
             <div id="handle" ref="handle" style="left: 0; top: 0;" @mousedown="grabHandle">
                 <img src="../assets/handle.png" alt="handle" /> 
@@ -11,7 +14,7 @@
         </div>
 
         <div id="slider">
-            <div id="fill"></div>
+            <div id="fill" :style="`width: ${val}%`"></div>
         </div>
     </div>
 </template>
@@ -32,6 +35,8 @@ const yOffsetOnGrab = ref(0);
 const handleRef = useTemplateRef('handle');
 const barRef =useTemplateRef('bar');
 const isGrabbingHandle = ref(false);
+
+const val = ref(0);
 
 window.addEventListener('mouseup', () => {
     if (isGrabbingHandle.value) {
@@ -90,20 +95,27 @@ const grabHandle = (e: MouseEvent) => {
         background-color: gray;
         position: relative;
         translate: -50% -50%;
+        & > img {
+            width: 100%;
+            aspect-ratio: 1;
+        }
     }
 
     & > #bar {
-        height: 8px;
-        background: blue;
+        height: 12px;
+        border-radius: 6px;
         position: absolute;
         top: 0;
         left: 0;
         transform-origin: left;
         translate: 0 -50%;
+        background-color: black;
+        & > img {
+            width: 100%;
+        }
     }
 
     img {
-        width: 128px;
         pointer-events: none;
     }
 
@@ -114,7 +126,11 @@ const grabHandle = (e: MouseEvent) => {
         background-color: gray;
         translate: -50% -50%;
         height: 64px;*/
-        translate: -12px -50%;
+        translate: -16px -50%;
+
+        & > img {
+            width: 128px;
+        }
 
         &.grabbing {
             cursor: grabbing;
