@@ -87,7 +87,9 @@ const handleDrop = (e) => {
             y: e.clientY - dropAreaRect.top - (draggedIngredientData.width / (300/100)), // Adjust for height if width is the only given dimension
             zIndex: zIndexCounter++,
         };
-        droppedIngredients.value.push(newDroppedIngredient);
+        if (totalVolume.value < 100) {
+            droppedIngredients.value.push(newDroppedIngredient);
+        }
         draggedIngredientData = null; // Reset dragged data
     }
 };
@@ -171,10 +173,22 @@ onMounted(() => {
 
 const totalVolume = computed(() => {
     const weightGrams = droppedIngredients.value.reduce((prev, curr) => prev + curr.weight, 0);
-    return (weightGrams / 26).toLocaleString(undefined, {
+    const weightOz = weightGrams / 26;
+    if (weightOz > 100) {
+        return 100;
+    }
+    return (weightOz).toLocaleString(undefined, {
         maximumFractionDigits: 2,
     });
 })
+
+/**
+ * Clears all dropped ingredients from the assembly area.
+ */
+const discardBurger = () => {
+    droppedIngredients.value = [];
+    zIndexCounter = 1; // Reset z-index counter
+};
 </script>
 
 <template>
@@ -219,10 +233,17 @@ const totalVolume = computed(() => {
                 @mousedown="startDragDroppedItem($event, item)"
                 @touchstart="startDragDroppedItem($event, item)"
             />
-        </div>
 
-        <div>
-            <h1 class="volume-label">Total Volume: {{ totalVolume }}oz</h1>
+            
+        </div>
+        
+        
+
+        <div class="bottom-menu">
+            <button @click="discardBurger" class="discard-button">
+                Discard Burger
+            </button>
+            <p class="volume-label">Total Volume: {{ totalVolume }}oz</p>
         </div>
     </div>
 </template>
@@ -257,7 +278,6 @@ const totalVolume = computed(() => {
     font-size: 1.25rem;
     font-weight: 500;
     color: #1f2937;
-    margin-bottom: 16px;
 }
 
 .ingredient-palette {
@@ -326,5 +346,36 @@ const totalVolume = computed(() => {
     font-size: 1.25rem;
     font-weight: 600;
     text-align: center;
+}
+
+.discard-button {
+    background-color: #ef4444;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.discard-button:hover {
+    background-color: #dc2626;
+    transform: translateY(-2px);
+}
+
+.discard-button:active {
+    background-color: #b91c1c;
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.bottom-menu {
+    margin-top: 1rem;
+    width: 48rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 </style>
