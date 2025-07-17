@@ -3,10 +3,10 @@ import { computed, ref, onMounted } from 'vue';
 
 // Reactive state for the ingredients in the palette
 const ingredients = ref([
-    { id: 'bun-bottom', src: '/assets/bun-bottom.png', height: 100, width: 150, alt: 'Bun Bottom', weight: 40 }, // grams
+    { id: 'bun-bottom', src: '/assets/bun-bottom.png', height: 80, width: 150, alt: 'Bun Bottom', weight: 40 }, // grams
     { id: 'burger-patty', src: '/assets/burger-patty.png', height: 100, width: 150, alt: 'Burger Patty', weight: 113 }, // grams (quarter-pound)
     { id: 'cheese', src: '/assets/cheese.png', height: 100, width: 150, alt: 'Cheese', weight: 28 }, // grams (slice)
-    { id: 'lettuce', src: '/assets/lettuce.png', height: 100, width: 150, alt: 'Lettuce', weight: 10 }, // grams (leafy portion)
+    { id: 'lettuce', src: '/assets/lettuce.png', height: 120, width: 120, alt: 'Lettuce', weight: 10 }, // grams (leafy portion)
     { id: 'ketchup', src: '/assets/ketchup.png', height: 100, width: 100, alt: 'Ketchup', weight: 15 }, // grams (typical serving)
     { id: 'mayonnaise', src: '/assets/mayonnaise.png', height: 100, width: 100, alt: 'Mayonnaise', weight: 15 }, // grams (typical serving)
     { id: 'mustard', src: '/assets/mustard.png', height: 100, width: 100, alt: 'Mustard', weight: 10 }, // grams (typical serving)
