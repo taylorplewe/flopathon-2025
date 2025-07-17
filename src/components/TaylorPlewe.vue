@@ -7,8 +7,7 @@
             <div id="bar" ref="bar" :style="`width: ${BAR_LENGTH + 12}px;`">
                 <!-- <img src="../assets/crank-arm.png" alt="crank arm" /> -->
             </div>
-            <!-- <div id="handle" ref="handle" style="left: 0; top: 0;" @mousedown="grabHandle"></div> -->
-            <div id="handle" ref="handle" style="left: 0; top: 0;" @mousedown="grabHandle">
+            <div id="handle" ref="handle" :style="`left: ${BAR_LENGTH}px; top: 0;`" @mousedown="grabHandle">
                 <img src="../assets/handle.png" alt="handle" /> 
             </div>
         </div>
@@ -46,11 +45,14 @@ window.addEventListener('mouseup', () => {
     }
 });
 
+const lastDeg = ref(0);
 window.addEventListener('mousemove', e => {
     if (!isGrabbingHandle.value) return;
 
     const desiredX = e.clientX + xOffsetOnGrab.value;
     const desiredY = e.clientY + yOffsetOnGrab.value;
+    const deg = Math.floor((Math.atan2(desiredY, desiredX) / Math.PI) * 180);
+    if (deg < lastDeg.value && deg > lastDeg.value - 180) return;
 
     const hyp = Math.sqrt(desiredX * desiredX + desiredY * desiredY);
     const factor = BAR_LENGTH.value / hyp;
@@ -61,12 +63,12 @@ window.addEventListener('mousemove', e => {
     handleRef.value.style.left = `${endX}px`;
     handleRef.value.style.top = `${endY}px`;
 
-    const deg = Math.floor((Math.atan2(desiredY, desiredX) / Math.PI) * 180);
     barRef.value.style.rotate = `${deg}deg`;
+
+    lastDeg.value = deg;
 });
 
 const grabHandle = (e: MouseEvent) => {
-    console.log(e);
     isGrabbingHandle.value = true;
     handleRef.value.style.cursor = 'grabbing';
     document.documentElement.style.cursor = 'grabbing';
