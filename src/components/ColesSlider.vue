@@ -76,6 +76,7 @@ onBeforeUnmount(() => {
   align-items: center;
   width: 600px;
   padding: 40px;
+  border: 2px solid #777;
   border-radius: 16px;
   background-color: #f5f5f5;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -130,10 +131,9 @@ onBeforeUnmount(() => {
   transform: scale(0.98);
 }
 
-/* Pipe on the container */
 .pipe {
   position: absolute;
-  bottom: -60px;
+  bottom: -64px;
   right: 80px;
   width: 30px;
   height: 60px;
