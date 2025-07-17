@@ -28,6 +28,7 @@ onUnmounted(() => {
 });
 
 const BAR_LENGTH = ref(100);
+const INCREASE_FACTOR = 0.003;
 
 const xOffsetOnGrab = ref(0);
 const yOffsetOnGrab = ref(0);
@@ -45,14 +46,14 @@ window.addEventListener('mouseup', () => {
     }
 });
 
-const lastDeg = ref(0);
+let lastDeg = 0;
 window.addEventListener('mousemove', e => {
     if (!isGrabbingHandle.value) return;
 
     const desiredX = e.clientX + xOffsetOnGrab.value;
     const desiredY = e.clientY + yOffsetOnGrab.value;
     const deg = Math.floor((Math.atan2(desiredY, desiredX) / Math.PI) * 180);
-    if (deg < lastDeg.value && deg > lastDeg.value - 180) return;
+    if (deg < lastDeg && deg > lastDeg - 180) return;
 
     const hyp = Math.sqrt(desiredX * desiredX + desiredY * desiredY);
     const factor = BAR_LENGTH.value / hyp;
@@ -65,7 +66,12 @@ window.addEventListener('mousemove', e => {
 
     barRef.value.style.rotate = `${deg}deg`;
 
-    lastDeg.value = deg;
+    if (deg - lastDeg > 0) {
+        val.value += (deg - lastDeg) * INCREASE_FACTOR;
+        if (val.value > 100) val.value = 100;
+    }
+
+    lastDeg = deg;
 });
 
 const grabHandle = (e: MouseEvent) => {
