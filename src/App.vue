@@ -17,18 +17,17 @@ const routes = router.options.routes
   <RouterView />
 </template>
 
-<style>
+<style scoped>
 header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   width: 100%;
-  
+  height: 60px;
 }
 .main-nav {
   background-color: #666666;
   font-size: 1.8em;
-  height: 60px;
 }
 </style>
