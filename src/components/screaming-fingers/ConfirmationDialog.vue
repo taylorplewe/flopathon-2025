@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps({
   volume: {
@@ -8,67 +8,64 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['confirm'])
+const emit = defineEmits(['success', 'fail']);
 
-const movingSlider = ref(0)
-const isSliding = ref(true)
-const resultMessage = ref('')
-let animationInterval = null
+const movingSlider = ref(0);
+const isSliding = ref(true);
+const result = ref(null);
+const animationInterval = ref(null);
 
-function startSliderAnimation() {
-  animationInterval = setInterval(() => {
-    // Speed boost: jump 5-15 per tick
-    const speed = Math.floor(Math.random() * 5) + 2
-    movingSlider.value = (movingSlider.value + speed) % 101
-  }, 15) // 15ms interval — max chaos
+const startSliderAnimation = () => {
+  animationInterval.value = setInterval(() => {
+    const speed = Math.floor(Math.random() * 4) + 2;
+    movingSlider.value = (movingSlider.value + speed) % 101;
+  }, 30);
 }
 
-function stopSliderAnimation() {
-  isSliding.value = false
-  clearInterval(animationInterval)
+const stopSliderAnimation = () => {
+  isSliding.value = false;
+  clearInterval(animationInterval.value);
 
-  const distance = Math.abs(movingSlider.value - props.volume)
-  if (distance <= 5) {
-    resultMessage.value = '🎯 SUCCESS! You matched the volume.'
+  const distance = Math.abs(movingSlider.value - props.volume);
+  if (distance <= 1) {
+    result.value = true;
   } else {
-    resultMessage.value = '💥 TOO BAD! That was way off.'
+    result.value = false;
   }
 }
 
-function confirmVolume() {
-  emit('confirm')
-}
-
 onMounted(() => {
-  startSliderAnimation()
+  startSliderAnimation();
 })
 
 onUnmounted(() => {
-  clearInterval(animationInterval)
+  clearInterval(animationInterval.value);
 })
 </script>
 
 <template>
   <div class="dialog-overlay">
     <div class="dialog-box">
-      <h2>⚡ Volume Reflex Test</h2>
+      <h2>Volume Reflex Test</h2>
 
-      <!-- Target volume slider -->
       <p>Target Volume: <strong>{{ volume }}%</strong></p>
       <input type="range" min="0" max="100" :value="volume" disabled />
 
-      <!-- Racing slider -->
       <p class="mt">Stop the chaotic slider below:</p>
       <input type="range" min="0" max="100" :value="movingSlider" disabled />
 
-      <button @click="stopSliderAnimation" :disabled="!isSliding" class="stop-button">
-        🛑 Stop the Madness
+      <button class="stop-button" v-if="isSliding" @click="stopSliderAnimation">
+        Stop the Madness
       </button>
 
-      <p v-if="resultMessage" class="result-message">{{ resultMessage }}</p>
+      <p class="result-message" v-if="!isSliding">{{ result ? 'SUCCESS! You matched the volume.' : 'TOO BAD! That was way off.' }}</p>
 
-      <button v-if="resultMessage" @click="confirmVolume" class="confirm-button">
-        ✅ Confirm
+      <button class="confirm-button" v-if="!isSliding && result" @click="$emit('success')">
+        Confirm
+      </button>
+
+      <button class="confirm-button" v-if="!isSliding && !result" @click="$emit('fail')">
+        Try Again
       </button>
     </div>
   </div>
