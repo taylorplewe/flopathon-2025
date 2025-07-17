@@ -8,10 +8,11 @@ const int WIDTH = 300;
 const int HEIGHT = 400;
 const int BPP = 24;
 
+Uint8 draw_pixels[WIDTH * HEIGHT * (BPP/8)];
+
 SDL_Window* window;
 SDL_Renderer* renderer;
 SDL_Surface* surface;
-SDL_Surface* drawn_surface;
 SDL_Surface* einstein;
 
 int sdl_x, sdl_y;
@@ -56,23 +57,24 @@ void render() {
   SDL_DestroyTexture(screenTexture);
 }
 
-int mouse_callback(int eventType, const EmscriptenMouseEvent* e, void* userData) {
+bool mouse_callback(int eventType, const EmscriptenMouseEvent* e, void* userData) {
   if (eventType == EMSCRIPTEN_EVENT_MOUSEDOWN) isMouseDown = 1;
   else if (eventType == EMSCRIPTEN_EVENT_MOUSEUP) isMouseDown = 0;
+  printf("isMouseDown: %d\n", isMouseDown);
   return 0;
 }
 
 int main(int argc, char** argv) {
-  memset(draw_pixels, 0xff, WIDTH * HEIGHT * (BPP/8));
+  // memset(draw_pixels, 0xff, WIDTH * HEIGHT * (BPP/8));
   
   SDL_Init(SDL_INIT_VIDEO);
   SDL_CreateWindowAndRenderer(WIDTH, HEIGHT, 0, &window, &renderer);
   surface = SDL_CreateRGBSurface(0, WIDTH, HEIGHT, BPP, 0, 0, 0, 0);
-  drawn_surface = SDL_CreateRGBSurface(0, WIDTH, HEIGTH, BPP, 0, 0, 0, 0);
 
   einstein = SDL_LoadBMP("einstein.bmp");
 
-  emscripten_set_main_loop(render, 0, 1);
   emscripten_set_mousedown_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, 1, mouse_callback);
+  emscripten_set_mouseup_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, 1, mouse_callback);
   emscripten_request_pointerlock(EMSCRIPTEN_EVENT_TARGET_WINDOW, 1);
+  emscripten_set_main_loop(render, 0, 1);
 }
