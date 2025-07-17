@@ -1,37 +1,50 @@
 <script setup>
 import { computed, ref } from 'vue';
-import { onKeyStroke, onStartTyping, useInterval } from '@vueuse/core';
+import { onKeyStroke, useCountdown } from '@vueuse/core';
 
 const TYPING_TEST_WORDS = "Bacon ipsum dolor amet short loin landjaeger pork loin, beef sirloin burgdoggen hamburger pig doner. Ground round jerky tail buffalo, pastrami tongue sausage turducken pig chuck t-bone capicola shankle tri-tip. Tenderloin alcatra jerky turkey t-bone. Sausage andouille porchetta kevin drumstick beef. Strip steak swine jerky ribeye cow chicken pig meatloaf boudin ground round sausage turkey beef ribs pastrami. Biltong boudin bacon drumstick, andouille beef ribs beef shoulder. Tail shoulder turducken, chicken frankfurter tri-tip turkey beef ribs. Shankle doner brisket jowl boudin filet mignon. Boudin pork loin brisket spare ribs frankfurter rump. Tongue sausage turkey chislic pork chop chuck beef ribeye turducken. Cow doner jowl sirloin, short loin pork chop rump ground round buffalo venison turducken pork loin. Bresaola beef filet mignon shankle tri-tip hamburger corned beef shoulder chicken picanha ground round bacon jerky pork. Pig tail prosciutto kielbasa beef pork, jerky short ribs meatloaf ground round fatback ham salami. Drumstick tail ball tip, chicken pork loin tenderloin fatback jerky swine alcatra corned beef pastrami short ribs. Short ribs ribeye burgdoggen pork belly. Meatloaf frankfurter bresaola tongue andouille, turducken ball tip pancetta ham jerky picanha shankle chicken shank buffalo. Sausage jerky prosciutto meatloaf, cow chuck landjaeger short loin meatball tri-tip hamburger salami corned beef chicken tenderloin. Flank drumstick biltong pastrami, cupim filet mignon jowl pork loin beef ribs swine bacon pig picanha. Chislic pork chop jerky tri-tip porchetta landjaeger sirloin chuck corned beef pastrami picanha pancetta biltong chicken. Meatloaf frankfurter boudin short ribs strip steak ball tip."
-
-const { counter, reset, pause, resume } = useInterval(1000, { controls: true, immediate: false });
 
 const userTypedWords = ref('');
 const typingTestStarted = ref(false);
 
+const { remaining, start, reset } = useCountdown(60, {
+    onComplete: () => {
+        typingTestStarted.value = false;
+        stop();
+    },
+});
+
+const correctWords = computed(() => {
+    return userTypedWords.value.split(' ').filter((word, index) => {
+        return word === TYPING_TEST_WORDS.split(' ')[index];
+    }).length;
+});
+
 const  wordsPerMinute = computed(() => {
-    if (!userTypedWords.value) return 0;
+    if (!correctWords.value) return 0;
 
-    const wordsPerSecond = (userTypedWords.value.split(' ').length / counter.value) * 60;
+    const wordsPerSecond = (correctWords.value / 60 - remaining.value);
 
-    if (wordsPerSecond > 100) {
+    if ((wordsPerSecond * 60) > 100) {
         return 100; // Cap the value at 100%
     }
 
-    return Math.floor(wordsPerSecond);
+    return Math.floor(wordsPerSecond * 60);
 });
 
-onStartTyping(() => {
-    if (typingTestStarted.value) return;
-
-    typingTestStarted.value = true;
-    resume();
-});
+const retryTest = () => {
+    userTypedWords.value = '';
+    reset();
+};
 
 onKeyStroke((e) => {
-    if (!typingTestStarted.value) {
+    if (remaining === 0) {
+        return;
+    }
+
+    if (!typingTestStarted.value && !userTypedWords.value) {
         typingTestStarted.value = true;
-        resume();
+        start();
     }
 
     if (e.key === 'Enter' || e.key === 'Shift' || e.key === 'Control' || e.key === 'Alt') {
@@ -50,20 +63,33 @@ onKeyStroke((e) => {
 <template>
     <div class="typing-powered-volume-slider">
         <div class="typing-test">
-            <p>{{ TYPING_TEST_WORDS }}</p>
+            <p>
+                <span
+                    v-for="(word, index) in TYPING_TEST_WORDS.split(' ')"
+                    :key="index"
+                    :class="{
+                        'correct-word': userTypedWords.split(' ')[index] === word,
+                        'incorrect-word': userTypedWords.split(' ')[index] && userTypedWords.split(' ')[index] !== word && index !== userTypedWords.split(' ').length - 1,
+                        'current-word': index === userTypedWords.split(' ').length - 1,
+                        'not-typed': !userTypedWords.split(' ')[index]
+                    }"
+                >
+                    {{ word + ' ' }}
+                </span>
+            </p>
         </div>
-        <p>{{ userTypedWords }}</p>
         <div class="slider-container">
-            <div>
-                <label>Volume: {{ wordsPerMinute }}%</label>
+            <div class="slider">
+                <label>Volume {{ !typingTestStarted && userTypedWords.length > 0 ? `${wordsPerMinute}%` : '' }}</label>
                 <input
                     type="range"
                     min="0"
                     max="100"
-                    :value="wordsPerMinute"
+                    :value="!typingTestStarted && userTypedWords.length > 0 ? wordsPerMinute : 0"
                     class="slider"
                     disabled
                 />
+                <button v-if="!typingTestStarted && userTypedWords.length > 0" @click="retryTest">Retry</button>
             </div>
         </div>
     </div>
@@ -73,23 +99,49 @@ onKeyStroke((e) => {
 .typing-powered-volume-slider {
     height: 100%;
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .typing-test {
-        height: 20px;
-        width: 100%;
+        height: 100%;
+        width: 50%;
         margin-top: 40px;
-        white-space: nowrap;
+    }
+
+    .current-word {
+        color: black;
+    }
+
+    .not-typed {
+        color: gray;
+    }
+
+    .correct-word {
+        color: green;
+    }
+
+    .incorrect-word {
+        color: red;
     }
 
     .slider-container {
-        width: 200px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: rgba(0, 0, 0, 0.5);
+        height: 100%;
+        width: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-        input {
-            width: 100%;
-            cursor: not-allowed
+        .slider {
+            width: 200px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+
+            input {
+                width: 160px;
+                padding: 0px;
+                cursor: not-allowed
+            }
         }
     }
 }
