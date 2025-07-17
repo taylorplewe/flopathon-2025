@@ -74,16 +74,16 @@ function flashBackground() {
 }
 
 function playAnnoyingSound() {
+	const click = new Audio('../../../public/sounds/typing/glass.mp3')
+	click.volume = Math.min(1, WPM.value / 100)
+	click.play()
+}
+
+function playTypingSound() {
 	const randomIndex = Math.floor(Math.random() * typingAudio.length)
 	const sound = typingAudio[randomIndex]
 	sound.volume = 1
 	sound.play()
-}
-
-function playTypingSound() {
-  const click = new Audio('../../../public/sounds/typing/glass.mp3')
-  click.volume = Math.min(1, WPM.value / 100)
-  click.play()
 }
 
 onMounted(() => {
