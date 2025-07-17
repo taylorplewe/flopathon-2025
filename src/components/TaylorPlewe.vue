@@ -13,7 +13,7 @@
         </div>
 
         <div id="slider">
-            <div id="fill" :style="`width: ${val}%`"></div>
+            <div id="fill" :style="`width: ${volume}%`"></div>
         </div>
     </div>
 </template>
@@ -21,33 +21,34 @@
 <script setup lang="ts">
 import { ref, useTemplateRef, onMounted, onUnmounted } from 'vue';
 
-onMounted(() => document.body.style.userSelect = 'none');
-onUnmounted(() => {
-    document.body.style.userSelect = 'revert';
-    document.documentElement.style.cursor = 'revert';
-});
-
 const BAR_LENGTH = ref(100);
 const INCREASE_FACTOR = 0.003;
 
 const xOffsetOnGrab = ref(0);
 const yOffsetOnGrab = ref(0);
 const handleRef = useTemplateRef('handle');
-const barRef =useTemplateRef('bar');
+const barRef = useTemplateRef('bar');
 const isGrabbingHandle = ref(false);
 
-const val = ref(0);
+const volume = ref(0);
 
-window.addEventListener('mouseup', () => {
+// turning logic
+let lastDeg = 0;
+const grabHandle = (e: MouseEvent) => {
+    isGrabbingHandle.value = true;
+    handleRef.value.style.cursor = 'grabbing';
+    document.documentElement.style.cursor = 'grabbing';
+    xOffsetOnGrab.value = parseInt(handleRef.value.style.left) - e.clientX;
+    yOffsetOnGrab.value = parseInt(handleRef.value.style.top) - e.clientY;
+}
+const letGoOfCrank = () => {
     if (isGrabbingHandle.value) {
         isGrabbingHandle.value = false;
         handleRef.value.style.cursor = 'grab';
         document.documentElement.style.cursor = 'revert';
     }
-});
-
-let lastDeg = 0;
-window.addEventListener('mousemove', e => {
+}
+const updateCrank = (e: MouseEvent) => {
     if (!isGrabbingHandle.value) return;
 
     const desiredX = e.clientX + xOffsetOnGrab.value;
@@ -67,20 +68,21 @@ window.addEventListener('mousemove', e => {
     barRef.value.style.rotate = `${deg}deg`;
 
     if (deg - lastDeg > 0) {
-        val.value += (deg - lastDeg) * INCREASE_FACTOR;
-        if (val.value > 100) val.value = 100;
+        volume.value = Math.min(100, volume.value + ((deg - lastDeg) * INCREASE_FACTOR));
     }
 
     lastDeg = deg;
-});
-
-const grabHandle = (e: MouseEvent) => {
-    isGrabbingHandle.value = true;
-    handleRef.value.style.cursor = 'grabbing';
-    document.documentElement.style.cursor = 'grabbing';
-    xOffsetOnGrab.value = parseInt(handleRef.value.style.left) - e.clientX;
-    yOffsetOnGrab.value = parseInt(handleRef.value.style.top) - e.clientY;
 }
+window.addEventListener('mousemove', updateCrank);
+window.addEventListener('mouseup', letGoOfCrank);
+
+onMounted(() => document.body.style.userSelect = 'none');
+onUnmounted(() => {
+    document.body.style.userSelect = 'revert';
+    document.documentElement.style.cursor = 'revert';
+    window.removeEventListener('mousedown', updateCrank);
+    window.removeEventListener('mouseup', letGoOfCrank);
+});
 </script>
 
 <style scoped>
