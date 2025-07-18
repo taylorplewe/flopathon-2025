@@ -5,7 +5,7 @@ const componentFiles = import.meta.glob('../components/*.vue')
 const dynamicRoutes = Object.keys(componentFiles)
   .map((path) => {
     const componentName = path.split('/').pop().replace('.vue', '')
-    const listOfIgnoredComponents = ['HomeView']
+    const listOfIgnoredComponents = ['HomeView', 'EasyMoney']
     if (listOfIgnoredComponents.includes(componentName)) return null
 
     const routePath = '/' + componentName.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
