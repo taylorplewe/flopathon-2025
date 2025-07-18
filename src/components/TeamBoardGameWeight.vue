@@ -23,7 +23,6 @@ const filteredGames = computed(() => {
 });
 
 const onFocusInput = (event) => {
-    showDropdown.value = true;
     nextTick(() => {
         if (
             event &&
