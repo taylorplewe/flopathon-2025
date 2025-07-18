@@ -44,6 +44,11 @@ const drawableRef = useTemplateRef('drawable');
 const volume = ref<number>(0);
 
 let getMatchPercentage: Function;
+let animationRequestHandle: number;
+const updateVolumeFromMatchPercentage = () => {
+    volume.value = getMatchPercentage() * 100;
+    animationRequestHandle = requestAnimationFrame(updateVolumeFromMatchPercentage);
+}
 
 onMounted(() => {
     document.documentElement.style.overflow = 'hidden';
@@ -63,11 +68,13 @@ onMounted(() => {
             canvas: drawableRef.value,
         });
         getMatchPercentage = mod._get_match_percentage;
+        animationRequestHandle = requestAnimationFrame(updateVolumeFromMatchPercentage);
     })();
 });
 
 onUnmounted(() => {
     document.documentElement.style.overflow = 'revert';
+    cancelAnimationFrame(animationRequestHandle);
 })
 </script>
 
@@ -85,6 +92,11 @@ main {
     top: 50%;
     left: 50%;
     translate: -50% -50%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-items: center;
 }
 canvas {
     padding: 8px;
@@ -111,5 +123,19 @@ canvas {
     flex-direction: column;
     align-items: center;    
     gap: 8px;
+}
+#slider {
+    width: 400px;
+    height: 16px;
+    background-color: #eee;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+
+    #fill {
+        position: absolute;
+        height: 100%;
+        background-color: #4b4;
+    }
 }
 </style>
