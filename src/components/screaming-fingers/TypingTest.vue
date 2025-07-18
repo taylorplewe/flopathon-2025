@@ -45,7 +45,7 @@ function startTimer() {
 		} else {
 			clearInterval(timerInterval.value)
 			console.log("Timer ended, final WPM:", WPM.value)
-			emit('complete', WPM.value)
+			emit('complete', successPercentage.value)
 		}
 	}, 1000)
 }
@@ -66,7 +66,7 @@ const successPercentage = computed(() => {
 
 function generateWords() {
 	const sampleWords = ['banana', 'chaos', 'fizz', 'weird', 'nonsense', 'vortex', 'echo', 'taco', 'pogo', 'explode']
-	words.value = Array.from({ length: 10 }, () => sampleWords[Math.floor(Math.random() * sampleWords.length)])
+	words.value = Array.from({ length: 50 }, () => sampleWords[Math.floor(Math.random() * sampleWords.length)])
 }
 
 function handleKeydown(e) {
@@ -124,8 +124,12 @@ function playTypingSound() {
 </script>
 
 <template>
-  <div v-if="audioLoaded" :style="{ backgroundColor }" class="typing-test">
-    <div class="words">{{ words.join(' ') }}</div>
+  <div v-if="audioLoaded"  class="typing-test"    :style="{ backgroundColor, fontSize: `${1.5 - mistakes * 0.08}rem` }">
+ <div
+   class="words"
+ >
+   {{ words.join(' ') }}
+ </div>
     <input v-model="input" disabled class="invisible-input" />
     <MistakeMeter :mistakes="mistakes" :keystrokes="keystrokes" />
 	  <p>Mistake Meter</p>
