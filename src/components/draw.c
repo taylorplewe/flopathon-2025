@@ -1,12 +1,13 @@
 #include <SDL.h>
 #include <emscripten.h>
 #include <emscripten/html5.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-const int WIDTH = 300;
-const int HEIGHT = 400;
-const int BPP = 24;
+#define WIDTH 300
+#define HEIGHT 400
+#define BPP 24
 
 Uint8 draw_pixels[WIDTH * HEIGHT * (BPP/8)];
 
@@ -16,7 +17,36 @@ SDL_Surface* surface;
 SDL_Surface* einstein;
 
 int sdl_x, sdl_y;
-int isMouseDown = 0;
+int is_mouse_down = 0;
+
+void fill_circle2(Uint8* mem, int x, int y, int r, Uint32 color) {
+  for (int w = 0; w < r*2; w++) {
+    for (int h = 0; h < r*2; h++) {
+      int dx = r - w;
+      int dy = r - h;
+      int offset_x = (dx + x) % WIDTH;
+      if (offset_x < 0 || offset_x >= WIDTH) continue;
+      if (
+        ((dx*dx) + (dy*dy) >= r*r)
+        || (offset_x < 0)
+        || ((dx + x) >= WIDTH)
+      )
+        continue;
+      
+      // get corresponding index into memory
+      int index = (
+        ((dy + y) * WIDTH) + offset_x
+      ) * (BPP/8);
+      if (index < 0) continue;
+      if (index > WIDTH * HEIGHT * (BPP/8)) continue;
+
+      // draw in provided color at point
+      mem[index] = color & 0xff;
+      mem[index+1] = (color >> 8) & 0xff;
+      mem[index+2] = (color >> 16) & 0xff;
+    }
+  }
+}
 
 void fill_circle(int x, int y, int r, SDL_Color color) {
   SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
@@ -42,8 +72,15 @@ void render() {
   if (SDL_MUSTLOCK(surface)) SDL_LockSurface(surface);
   SDL_FillRect(surface, NULL, 0);
   memcpy(surface->pixels, draw_pixels, WIDTH * HEIGHT * (BPP/8));
+  fill_circle2((Uint8*)surface->pixels, sdl_x, sdl_y, 32, 0x88888888);
+
+  // draw with pencil
+  if (is_mouse_down) fill_circle2(draw_pixels, sdl_x, sdl_y, 32, 0xffffffff);
+
+  // draw eisntein
   // SDL_Rect rect = { 0, 0, einstein->w, einstein->h };
   // SDL_BlitSurface(einstein, NULL, surface, &rect);
+
   if (SDL_MUSTLOCK(surface)) SDL_UnlockSurface(surface);
 
   // draw surface to screen using renderer
@@ -51,16 +88,16 @@ void render() {
 
   SDL_RenderCopy(renderer, screenTexture, NULL, NULL);
   SDL_Color col = {255, 255, 255, 255};
-  fill_circle(0, 0, 32, col);
+  // fill_circle(0, 0, 32, col);
   SDL_RenderPresent(renderer);
 
   SDL_DestroyTexture(screenTexture);
 }
 
 bool mouse_callback(int eventType, const EmscriptenMouseEvent* e, void* userData) {
-  if (eventType == EMSCRIPTEN_EVENT_MOUSEDOWN) isMouseDown = 1;
-  else if (eventType == EMSCRIPTEN_EVENT_MOUSEUP) isMouseDown = 0;
-  printf("isMouseDown: %d\n", isMouseDown);
+  if (eventType == EMSCRIPTEN_EVENT_MOUSEDOWN) is_mouse_down = 1;
+  else if (eventType == EMSCRIPTEN_EVENT_MOUSEUP) is_mouse_down = 0;
+  printf("isMouseDown: %d\n", is_mouse_down);
   return 0;
 }
 
