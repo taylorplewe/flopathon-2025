@@ -9,12 +9,14 @@ function handleClick() {
 
 <template>
   <button @click="handleClick" class="start-button">
-    🔥 Start Typing Challenge 🔥
+    To Change Your Volume, Take the Typing Test!
   </button>
 </template>
 
 <style scoped>
 .start-button {
+  display: block;
+  margin: 3rem auto;
   padding: 1rem 2rem;
   font-size: 1.5rem;
   background-color: #ff00aa;

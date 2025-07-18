@@ -1,5 +1,5 @@
 <template>
-  <div class="main-page">
+  <div>
     <StartButton @start="showTyping = true" v-if="!showTyping" />
     <TypingTest v-if="showTyping" @complete="onTypingComplete" :typing-audio="typingAudio" />
     <ConfirmationDialog v-if="showConfirmation" :volume="finalWPM" @success="saveVolume" @fail="resetGame"/>
@@ -48,6 +48,7 @@ const resetGame = () => {
 
 function saveVolume() {
   console.log('Final Volume Set To:', finalWPM.value)
+  alert(`Volume saved at ${finalWPM.value} WPM!`);
 }
 </script>
 

@@ -6,7 +6,7 @@ const props = defineProps({
 	keystrokes: Number,
 })
 
-const meterHeight = computed(() => `${props.mistakes}%`)
+const meterHeight = computed(() => `${100 - Math.min(props.mistakes * 6, 100)}%`)
 </script>
 
 <template>
@@ -22,10 +22,11 @@ const meterHeight = computed(() => `${props.mistakes}%`)
 	border: 2px solid black;
 	display: flex;
 	flex-direction: column;
-	justify-content: flex-end; /* Align fill at the bottom */
+	justify-content: flex-start; /* Align fill at the bottom */
+	background: linear-gradient(to top, green, yellow, red); /* Gradient flows upward */
 }
 .meter-fill {
 	width: 100%;
-	background: linear-gradient(to top, transparent,green, yellow, red); /* Gradient flows upward */
+	background: white;
 }
 </style>
