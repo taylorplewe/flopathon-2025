@@ -17,7 +17,12 @@ SDL_Surface* surface;
 SDL_Surface* einstein;
 
 int sdl_x, sdl_y;
-int is_mouse_down = 0;
+enum MouseButton {
+  MouseButtonNone,
+  MouseButtonLeft,
+  MouseButtonRight
+};
+enum MouseButton mouse_button_down = MouseButtonNone;
 
 void fill_circle2(Uint8* mem, int x, int y, int r, Uint32 color) {
   for (int w = 0; w < r*2; w++) {
@@ -75,7 +80,10 @@ void render() {
   fill_circle2((Uint8*)surface->pixels, sdl_x, sdl_y, 32, 0x88888888);
 
   // draw with pencil
-  if (is_mouse_down) fill_circle2(draw_pixels, sdl_x, sdl_y, 32, 0xffffffff);
+  if (mouse_button_down != MouseButtonNone) {
+    Uint32 col = mouse_button_down == MouseButtonLeft ? 0xffffffff : 0x00000000;
+    fill_circle2(draw_pixels, sdl_x, sdl_y, 32, col);
+  }
 
   // draw eisntein
   // SDL_Rect rect = { 0, 0, einstein->w, einstein->h };
@@ -95,9 +103,8 @@ void render() {
 }
 
 bool mouse_callback(int eventType, const EmscriptenMouseEvent* e, void* userData) {
-  if (eventType == EMSCRIPTEN_EVENT_MOUSEDOWN) is_mouse_down = 1;
-  else if (eventType == EMSCRIPTEN_EVENT_MOUSEUP) is_mouse_down = 0;
-  printf("isMouseDown: %d\n", is_mouse_down);
+  if (eventType == EMSCRIPTEN_EVENT_MOUSEDOWN) mouse_button_down = e->button == 0 ? MouseButtonLeft : MouseButtonRight;
+  else if (eventType == EMSCRIPTEN_EVENT_MOUSEUP) mouse_button_down = MouseButtonNone;
   return 0;
 }
 
@@ -112,6 +119,6 @@ int main(int argc, char** argv) {
 
   emscripten_set_mousedown_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, 1, mouse_callback);
   emscripten_set_mouseup_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, 1, mouse_callback);
-  emscripten_request_pointerlock(EMSCRIPTEN_EVENT_TARGET_WINDOW, 1);
+  // emscripten_request_pointerlock(EMSCRIPTEN_EVENT_TARGET_WINDOW, 1);
   emscripten_set_main_loop(render, 0, 1);
 }
