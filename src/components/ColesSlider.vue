@@ -15,7 +15,13 @@ const incrementVolume = () => {
 const setupVolumeDecrease = () => {
   intervalId = setInterval(() => {
     if (volume.value > 0) {
-      volume.value -= 0.1
+      const baseLeakRate = 0.1
+      const maxMultiplier = 4
+
+      const scaleFactor = 1 + (volume.value / 100) * (maxMultiplier - 1)
+      const leakRate = baseLeakRate * scaleFactor
+
+      volume.value = Math.max(0, volume.value - leakRate)
     }
   }, 50)
 }
@@ -46,9 +52,18 @@ onBeforeUnmount(() => {
       </div>
       <div class="pipe"></div>
       <div v-if="volume > 0" class="water-container">
-        <div class="water-leak leak1"></div>
-        <div class="water-leak leak2"></div>
-        <div class="water-leak leak3"></div>
+        <div
+          class="water-leak leak1"
+          :style="{ animationDelay: `${Math.max(0.05, 2 - volume / 25)}s` }"
+        ></div>
+        <div
+          class="water-leak leak2"
+          :style="{ animationDelay: `${Math.max(0.05, 1.4 - volume / 30)}s` }"
+        ></div>
+        <div
+          class="water-leak leak3"
+          :style="{ animationDelay: `${Math.max(0.05, 0.8 - volume / 35)}s` }"
+        ></div>
       </div>
     </div>
   </div>
@@ -62,11 +77,12 @@ onBeforeUnmount(() => {
 }
 
 .wrapper {
-  width: 100vw;
-  height: calc(100vh - 60px);
+  margin-top: 60px;
+  padding-top: 60px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  box-sizing: border-box;
 }
 
 .slider-container {
@@ -161,28 +177,25 @@ onBeforeUnmount(() => {
   background-color: #20c4f4;
   border-radius: 40% 40% 50% 50%;
   opacity: 0;
-  animation: dripping 2s infinite linear;
+  animation: dripping 2s infinite;
 }
 
 .leak1 {
   left: 6px;
   top: 0;
-  animation-delay: 0s;
   animation-duration: 2s;
 }
 
 .leak2 {
   left: 6px;
   top: 0;
-  animation-delay: 0.7s;
-  animation-duration: 2.2s;
+  animation-duration: 2s;
 }
 
 .leak3 {
   left: 6px;
   top: 0;
-  animation-delay: 1.4s;
-  animation-duration: 1.8s;
+  animation-duration: 2s;
 }
 
 @keyframes dripping {
