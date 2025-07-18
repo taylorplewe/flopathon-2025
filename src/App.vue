@@ -8,9 +8,11 @@ const routes = router.options.routes
 <template>
   <header>
     <nav class="main-nav">
-      <RouterLink v-for="route in routes" :key="route.name" :to="route.path">
-        {{ route.meta?.displayName || route.name }}
-      </RouterLink>
+      <div v-for="route in routes" :key="route.name">
+        <RouterLink  :to="route.path" class="link">
+          {{ route.meta?.displayName || route.name }}
+        </RouterLink>|
+      </div>
     </nav>
   </header>
 
@@ -26,8 +28,12 @@ header {
   width: 100%;
   height: 60px;
 }
+.link:hover {
+  color: lime;
+}
 .main-nav {
   background-color: #666666;
   font-size: 1.8em;
+  display: flex;
 }
 </style>
