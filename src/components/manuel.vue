@@ -27,11 +27,11 @@
 
 <script setup>
 import { onMounted, onBeforeUnmount, ref } from 'vue';
-import Modal from './maze/Modal.vue';
-import MazeGenerator from './maze/MazeGenerator.vue';
-import Dvd from './maze/Dvd.vue';
-import Spooky from './maze/Spooky.vue';
-import FlyingImages from './maze/FlyingImages.vue';
+import Modal from './manuel/Modal.vue';
+import MazeGenerator from './manuel/MazeGenerator.vue';
+import Dvd from './manuel/Dvd.vue';
+import Spooky from './manuel/Spooky.vue';
+import FlyingImages from './manuel/FlyingImages.vue';
 
 const showModal = ref(false);
 
