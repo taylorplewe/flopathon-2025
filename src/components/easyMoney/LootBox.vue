@@ -511,7 +511,9 @@
             <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
             {{ scrambledText() }}
         </div>
-
+      <div class="loot-box-header">
+        <h1>Loot Box</h1>
+      </div>
             <div class="loot-box__cards-container-container">
                 <div class="loot-box__cards-container">
                     <div class="loot-box__cards" :style="cardsStyle">
@@ -527,32 +529,36 @@
             </div>
             <i class="loot-box__icon ph-fill ph-hand-pointing"></i>
         </div>
-        <click-combo-counter
-            v-if="!isFlipped || buttonDisabled"
+      <click-combo-counter
+        v-if="!isFlipped || buttonDisabled"
+        class="loot-box__combo"
+        :click-count="clickCount"
+        :k-o="clickThreshold"
+      >
+        <button
+          :class="['loot-box__spin-button', { 'is-disabled': buttonDisabled }]"
+          @click="onClick(true)"
+        >
+          Spin!
+        </button>
+      </click-combo-counter>
+        <template v-else>
+          <click-combo-counter
             class="loot-box__combo"
             :click-count="clickCount"
             :k-o="clickThreshold"
-        >
+          >
             <button
-                :class="['loot-box__spin-button', { 'is-disabled': buttonDisabled }]"
-                @click="onClick(true)"
+              :class="['loot-box__spin-button', { 'is-disabled': buttonDisabled || !captchaIsCorrect }]"
+              @click="onClick(false)"
             >
-                Spin!
+              Accept!
             </button>
-        </click-combo-counter>
-        <click-combo-counter
-            v-else
-            class="loot-box__combo"
-            :click-count="clickCount"
-            :k-o="clickThreshold"
-        >
-            <button
-                :class="['loot-box__spin-button', { 'is-disabled': buttonDisabled }]"
-                @click="onClick(false)"
-            >
-                Accept!
-            </button>
-        </click-combo-counter>
+          </click-combo-counter>
+          <captcha v-model:is-correct="captchaIsCorrect" />
+        </template>
+
+
     </div>
 </template>
 
@@ -563,6 +569,7 @@ import { useRouter } from 'vue-router';
 
 import LootBoxCard from './LootBoxCard.vue';
 import { useVolumeStore } from './useVolumeStore.js';
+import Captcha from '@/components/easyMoney/Captcha.vue'
 import ClickComboCounter from './ClickComboCounter.vue';
 
 const cardCount = 75; // Set the desired number of cards
@@ -571,6 +578,7 @@ const cardGap = 24;
 
 const router = useRouter();
 
+const captchaIsCorrect = ref(false)
 const cards = ref([]);
 const cardsStyle = ref({
     transform: 'translateX(0)',
@@ -783,6 +791,15 @@ const onClick = (isSpin) => {
 .loot-box__cards-container-container {
     background: #fff;
     border-radius: 8px;
+}
+
+.loot-box-header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
 }
 
 .loot-box__cards-container {

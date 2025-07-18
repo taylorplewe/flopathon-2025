@@ -96,6 +96,7 @@ function playVideo() {
 
 <style scoped>
 .video-container {
+    height: min-content;
     width: 960px;
     max-width: 100%;
     background: #000;
@@ -131,7 +132,7 @@ input[type="range"] {
 }
 
 .play-button {
-  z-index: 100;
+  z-index: 9;
   font-size: 120px;
   position: absolute;
   cursor: pointer;
