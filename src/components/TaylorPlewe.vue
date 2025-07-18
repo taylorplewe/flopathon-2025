@@ -46,11 +46,15 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, useTemplateRef } from 'vue';
 
-import Draw from './draw.js';
+import Draw from './TaylorPlewe/draw.js';
 
+const POSSIBLE_IMAGES = Object.freeze([
+    'einstein.bmp',
+    'aco.bmp',
+]);
+const IMAGE_INDEX_STORAGE_KEY = 'TaylorPlewe_ImageIndex';
 const targetRef = useTemplateRef('target');
 const drawableRef = useTemplateRef('drawable');
-
 const volume = ref<number>(0);
 let targetPixels: Uint8ClampedArray;
 
@@ -64,38 +68,63 @@ const updateVolumeFromMatchPercentage = () => {
 onMounted(() => {
     document.documentElement.style.overflow = 'hidden';
 
-    // draw image on left canvas
+    loadTargetImage();
+    loadWasmModule();
+});
+
+const loadTargetImage = () => {
+    // prepare to save pixels when image loads
     const img = new Image();
     img.onload = () => {
         const targetCtx = targetRef.value.getContext('2d');
         targetCtx.drawImage(img, 0, 0);
         targetPixels = targetCtx.getImageData(0, 0, targetRef.value.width, targetRef.value.height).data;
-        console.info('targetPixels set ✅');
+        console.info('TargetPixels set ✅');
     }
-    img.src = 'src/components/einstein.bmp';
 
-    // load WebAssembly module
-    (async () => {
-        const mod = await Draw({
-            canvas: drawableRef.value,
-        });
-        getMatchPercentage = mod._get_match_percentage;
-        animationRequestHandle = requestAnimationFrame(updateVolumeFromMatchPercentage);
+    // get index of image & draw to canvas
+    const imageIndexFromStorage = sessionStorage.getItem(IMAGE_INDEX_STORAGE_KEY);
+    let imageIndex: number = imageIndexFromStorage
+        ? parseInt(imageIndexFromStorage)
+        : Math.floor(Math.random() * POSSIBLE_IMAGES.length);
+    const imageName = POSSIBLE_IMAGES[imageIndex];
+    img.src = `src/components/TaylorPlewe/${imageName}`;
 
-        // allocate memory in wasm land, blit Einstein's pixels to it
-        if (targetPixels) {
-            const pointer = mod._malloc(targetPixels.byteLength);
-            if (pointer === null) {
-                throw new Error('could not allocate memory from JavaScript!');
+    // rotate through images when user refreshes
+    imageIndex = (imageIndex + 1) % POSSIBLE_IMAGES.length;
+    sessionStorage.setItem(IMAGE_INDEX_STORAGE_KEY, imageIndex.toString());
+}
+
+const loadWasmModule = async () => {
+    const mod = await Draw({
+        canvas: drawableRef.value,
+    });
+    getMatchPercentage = mod._get_match_percentage;
+    animationRequestHandle = requestAnimationFrame(updateVolumeFromMatchPercentage);
+
+    // allocate memory in wasm land, blit Einstein's pixels to it
+    // but only if target pixels are ready
+    if (targetPixels) sendTargetPixelDataToWasm(mod);
+    else {
+        const waitForPixelsInterval = setInterval(() => {
+            console.info('Target pixels still not set, running interval...');
+            if (targetPixels) {
+                sendTargetPixelDataToWasm(mod);
+                clearInterval(waitForPixelsInterval);
             }
-            mod.HEAPU8.set(targetPixels, pointer / Uint8Array.BYTES_PER_ELEMENT);
-            mod._read_target_pixel_data(pointer, targetPixels.byteLength);
-            console.info('targetPixels sent to wasm ✅')
-        } else {
-            throw new Error('targetPixels was not set by the time the mod was initialized!');
-        }
-    })();
-});
+        }, 300);
+    }
+}
+
+const sendTargetPixelDataToWasm = (mod: any) => {
+    const pointer = mod._malloc(targetPixels.byteLength);
+    if (pointer === null) {
+        throw new Error('Could not allocate memory from JavaScript!');
+    }
+    mod.HEAPU8.set(targetPixels, pointer / Uint8Array.BYTES_PER_ELEMENT);
+    mod._read_target_pixel_data(pointer, targetPixels.byteLength);
+    console.info('TargetPixels sent to wasm ✅')
+}
 
 onUnmounted(() => {
     document.documentElement.style.overflow = 'revert';
