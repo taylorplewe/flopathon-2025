@@ -51,6 +51,7 @@ import Draw from './TaylorPlewe/draw.js';
 const POSSIBLE_IMAGES = Object.freeze([
     'einstein.bmp',
     'aco.bmp',
+    'falcon.bmp',
 ]);
 const IMAGE_INDEX_STORAGE_KEY = 'TaylorPlewe_ImageIndex';
 const targetRef = useTemplateRef('target');
@@ -71,6 +72,11 @@ onMounted(() => {
     loadTargetImage();
     loadWasmModule();
 });
+onUnmounted(() => {
+    document.documentElement.style.overflow = 'revert';
+    cancelAnimationFrame(animationRequestHandle);
+});
+
 
 const loadTargetImage = () => {
     // prepare to save pixels when image loads
@@ -125,11 +131,6 @@ const sendTargetPixelDataToWasm = (mod: any) => {
     mod._read_target_pixel_data(pointer, targetPixels.byteLength);
     console.info('TargetPixels sent to wasm ✅')
 }
-
-onUnmounted(() => {
-    document.documentElement.style.overflow = 'revert';
-    cancelAnimationFrame(animationRequestHandle);
-})
 </script>
 
 <style scoped>
