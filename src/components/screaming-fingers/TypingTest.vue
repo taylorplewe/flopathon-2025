@@ -7,6 +7,8 @@ const props = defineProps({
 	typingAudio: Array
 })
 
+const emit = defineEmits(['complete'])
+
 const typingVolume = ref(0.1)
 const words = ref([])
 const input = ref('')
@@ -34,6 +36,7 @@ function checkAudioLoaded(audioSources) {
 		})
 	})
 }
+
 function startTimer() {
 	remainingTime.value = 10
 	timerInterval.value = setInterval(() => {
@@ -41,6 +44,8 @@ function startTimer() {
 			remainingTime.value--
 		} else {
 			clearInterval(timerInterval.value)
+			console.log("Timer ended, final WPM:", WPM.value)
+			emit('complete', WPM.value)
 		}
 	}, 1000)
 }
@@ -65,6 +70,10 @@ function generateWords() {
 }
 
 function handleKeydown(e) {
+	if (!timerInterval.value) {
+		startTimer()
+		startTime.value = Date.now()
+	}
 	console.log("Key pressed:", e.key)
 	flashBackground()
 	playTypingSound()
@@ -109,8 +118,6 @@ function playTypingSound() {
 }
  onMounted(() => {
 	 generateWords()
-	 startTimer()
-	 startTime.value = Date.now()
 	 document.addEventListener('keydown', handleKeydown)
 	 checkAudioLoaded(props.typingAudio)
  })

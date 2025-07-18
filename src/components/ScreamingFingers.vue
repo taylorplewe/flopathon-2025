@@ -1,3 +1,11 @@
+<template>
+  <div class="main-page">
+    <StartButton @start="showTyping = true" v-if="!showTyping" />
+    <TypingTest v-if="showTyping" @complete="onTypingComplete" :typing-audio="typingAudio" />
+    <ConfirmationDialog v-if="showConfirmation" :volume="finalWPM" @success="saveVolume" @fail="resetGame"/>
+  </div>
+</template>
+
 <script setup>
 import { ref } from 'vue';
 import StartButton from '../components/screaming-fingers/StartButton.vue';
@@ -23,32 +31,23 @@ const typingAudio = [
   '../../../public/sounds/typing/whistle.mp3',
 ]
 
-const showTyping = ref(false);
-const showConfirmation = ref(false);
-const finalVolume = ref(0);
+const showTyping = ref(false)
+const showConfirmation = ref(false)
+const finalWPM = ref(0)
 
-const onTypingComplete = (successPercentage) => {
-  finalVolume.value = successPercentage;
-  showTyping.value = false;
-  showConfirmation.value = true;
+function onTypingComplete(WPM) {
+	finalWPM.value = WPM
+	showTyping.value = false
+	showConfirmation.value = true
 }
-
 const resetGame = () => {
-  showTyping.value = false;
+  showTyping.value = true;
   showConfirmation.value = false;
-  finalVolume.value = 0;
+  finalWPM.value = 0;
 }
 
-const saveVolume = () => {
-  console.log('Final Volume Set To:', finalVolume.value);
+function saveVolume() {
+  console.log('Final Volume Set To:', finalWPM.value)
 }
 </script>
-
-<template>
-  <div class="main-page">
-    <StartButton v-if="!showTyping" @start="showTyping = true" />
-    <TypingTest v-if="showTyping" :typing-audio="typingAudio" @complete="onTypingComplete" />
-    <ConfirmationDialog v-if="showConfirmation" :volume="finalVolume" @success="saveVolume" @fail="resetGame" />
-  </div>
-</template>
 
