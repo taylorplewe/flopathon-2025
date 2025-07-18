@@ -6,6 +6,7 @@ import { drawGame } from './TeamPokemon/drawGame';
 
 class GameState {
     constructor() {
+        this.currentVolume = 100;
         this.opponentPokemon;
         this.opponentHealth = 100;
         this.position = [9,12];
@@ -82,6 +83,7 @@ const isCurrentTile = (row, col) =>{
 
 <template>
     <div class="wrapper">
+        <div>{{ `Current Volume: ${gameState.currentVolume}%` }}</div>
         <canvas id="canvas" height="320" width="480"></canvas>
         <div class="buttons">
             <button id="left" @click="onButtonPress('ArrowLeft')">Left</button>

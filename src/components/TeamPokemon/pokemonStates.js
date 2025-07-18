@@ -171,11 +171,12 @@ export class Menu extends DecisionState {
 export class Catching extends DecisionState {
     constructor(gameState) {
         super(gameState);
-        this.animationCount = 50;
+        this.animationCount = 30;
     }
     idleTick() {
         this.animationCount -= 1;
         if (this.animationCount <= 0) {
+            this.gameState.currentVolume = this.gameState.opponentHealth;
             return new CatchMessage(this.gameState);
         }
     }
