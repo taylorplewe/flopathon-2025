@@ -70,35 +70,7 @@ void fill_circle(Uint8* mem, int x, int y, int r, Uint32 color) {
   }
 }
 
-void update() {
-  SDL_RenderClear(renderer);
-
-  // make modifications to surface
-  if (SDL_MUSTLOCK(surface)) SDL_LockSurface(surface);
-
-  // first, draw everything the user has drawn thus far
-  memcpy(surface->pixels, draw_pixels, WIDTH * HEIGHT * (BPP/8));
-
-  // second, draw the user's cursor on top of that
-  fill_circle((Uint8*)surface->pixels, sdl_x, sdl_y, pencil_radius, 0x88888888);
-
-  if (SDL_MUSTLOCK(surface)) SDL_UnlockSurface(surface);
-
-  // pencil update logic
-  if (mouse_button_down != MouseButtonNone) {
-    Uint32 col = mouse_button_down == MouseButtonLeft ? COL_FG : COL_BG;
-    fill_circle(draw_pixels, sdl_x, sdl_y, pencil_radius, col);
-  }
-
-  // draw surface to screen using renderer
-  SDL_Texture* screenTexture = SDL_CreateTextureFromSurface(renderer, surface);
-
-  SDL_RenderCopy(renderer, screenTexture, NULL, NULL);
-  SDL_RenderPresent(renderer);
-
-  SDL_DestroyTexture(screenTexture);
-}
-
+// mouse event handlers
 bool mouse_callback(int eventType, const EmscriptenMouseEvent* e, void* userData) {
   if (eventType == EMSCRIPTEN_EVENT_MOUSEDOWN)
     mouse_button_down = e->button == 0
@@ -111,12 +83,38 @@ bool mouse_callback(int eventType, const EmscriptenMouseEvent* e, void* userData
   }
   return 0;
 }
-
 bool wheel_callback(int eventType, const EmscriptenWheelEvent* e, void* userData) {
   pencil_radius += (int)(e->deltaY/2);
   if (pencil_radius > PENCIL_MAX_RADIUS) pencil_radius = PENCIL_MAX_RADIUS;
   if (pencil_radius < PENCIL_MIN_RADIUS) pencil_radius = PENCIL_MIN_RADIUS;
   return 0;
+}
+
+void update() {
+  // pencil update logic
+  if (mouse_button_down != MouseButtonNone) {
+    Uint32 col = mouse_button_down == MouseButtonLeft ? COL_FG : COL_BG;
+    fill_circle(draw_pixels, sdl_x, sdl_y, pencil_radius, col);
+  }
+
+  SDL_RenderClear(renderer);
+
+  // make modifications to surface; lock for thread safety
+  if (SDL_MUSTLOCK(surface)) SDL_LockSurface(surface);
+
+  // first, draw everything the user has drawn thus far
+  memcpy(surface->pixels, draw_pixels, WIDTH * HEIGHT * (BPP/8));
+
+  // second, draw the user's cursor on top of that
+  fill_circle((Uint8*)surface->pixels, sdl_x, sdl_y, pencil_radius, 0x88888888);
+
+  if (SDL_MUSTLOCK(surface)) SDL_UnlockSurface(surface);
+
+  // draw surface to screen using renderer & wrap up frame
+  SDL_Texture* screenTexture = SDL_CreateTextureFromSurface(renderer, surface);
+  SDL_RenderCopy(renderer, screenTexture, NULL, NULL);
+  SDL_RenderPresent(renderer);
+  SDL_DestroyTexture(screenTexture);
 }
 
 int main(int argc, char** argv) {
