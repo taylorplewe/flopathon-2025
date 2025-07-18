@@ -1,13 +1,4 @@
 <template>
-    <div class="button-section">
-        <h1>Maze Randomizer</h1>
-        <button @click="generateMaze" class="generate-button">
-            Generate New Maze
-        </button>
-        <div class="volume-display">
-            Mazes Completed: {{ volume }}
-        </div>
-    </div>
 
     <div class="maze-container" @mouseleave="handleMouseLeave">
         <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="maze-row">
@@ -28,18 +19,6 @@
             }" @mousemove="handleMouseOver(rowIndex, colIndex, $event)"></div>
         </div>
     </div>
-
-    <div class="message-box" :class="{
-        'wall-hit-message': isMouseOnWall, /* Highest priority */
-        'congrats-message': isMouseOnEnd,
-        'edge-message': isMouseOnEdge && !isMouseOnWall && !isMouseOnEnd
-    }">
-        <span v-if="isMouseOnWall">You hit a wall!</span>
-        <span v-else-if="isMouseOnEnd">Congrats!</span>
-        <span v-else-if="isMouseOnEdge">Mouse is on an edge!</span>
-        <span v-else-if="hoveredCell.row !== -1">Mouse at: ({{ hoveredCell.row }}, {{ hoveredCell.col }})</span>
-        <span v-else>Hover over the maze to see details!</span>
-    </div>
 </template>
 
 <script setup>
@@ -49,8 +28,8 @@ const emit = defineEmits(['hit-wall', 'hit-end', 'new-volume']);
 
 // #region Maze Generation Logic
 
-const mazeRows = ref(3); // Number of rows in the maze
-const mazeCols = ref(3); // Number of columns in the maze
+const mazeRows = ref(20); // Number of rows in the maze
+const mazeCols = ref(20); // Number of columns in the maze
 // Reactive grid to store maze cells
 const grid = reactive([]);
 
@@ -408,15 +387,17 @@ const handleMouseLeave = () => {
 };
 
 // Generate a maze when the component is first mounted
-onMounted(generateMaze);
+// onMounted(generateMaze);
 
+const initiateMaze = () => generateMaze();
+initiateMaze();
 // #endregion Maze Generation Logic
 </script>
 
 <style>
 /* Ensure Inter font is used for the entire application */
 body {
-    cursor: pointer;
+    cursor: crosshair;
     font-family: 'Inter', sans-serif;
     min-height: 100vh;
     background-color: #f3f4f6;

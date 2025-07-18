@@ -112,7 +112,7 @@ const closeModal = () => {
     background: transparent;
 }
 
-.btn-green {
+.btn-submit {
     color: #fff;
     background: #4aae9b;
     border: 1px solid #4aae9b;
