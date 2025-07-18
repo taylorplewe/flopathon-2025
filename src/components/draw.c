@@ -129,4 +129,5 @@ int main(int argc, char** argv) {
   emscripten_set_wheel_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, 1, wheel_callback);
   // emscripten_request_pointerlock(EMSCRIPTEN_EVENT_TARGET_WINDOW, 1);
   emscripten_set_main_loop(render, 0, 1);
+  emscripten_hide_mouse();
 }
