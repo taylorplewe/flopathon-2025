@@ -47,8 +47,7 @@ export class Fade extends DecisionState {
 export class OverWorld extends DecisionState {
     constructor(gameState) {
         super(gameState);
-        this.grassTilesUntilEncounter = 2;
-        // this.grassTilesUntilEncounter = getRandomInt(2,10);
+        this.grassTilesUntilEncounter = getRandomInt(2,10);
     }
     getNewStateFromInput(key) {
         if (key === 'b') {
