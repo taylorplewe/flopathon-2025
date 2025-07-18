@@ -1,5 +1,5 @@
 <template>
-    <header>(the volume is determined by how similar your painting is to the painting on the left!)</header>
+    <p id="header">(the volume is determined by how similar your painting is to the painting on the left)</p>
     <main>
         <div class="canvases">
             <div class="canvas-with-label">
@@ -9,6 +9,7 @@
                     ref="target"
                     width="128"
                     height="128"
+                    tabindex="-1"
                     @contextmenu="e => e.preventDefault()"
                 ></canvas>
             </div>
@@ -20,6 +21,7 @@
                     ref="drawable"
                     width="128"
                     height="128"
+                    tabindex="-1"
                     @contextmenu="e => e.preventDefault()"
                 ></canvas>
             </div>
@@ -28,30 +30,35 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, useTemplateRef } from 'vue';
+import { ref, onMounted, onUnmounted, useTemplateRef } from 'vue';
 
 import Draw from './a.out.js';
 
 const targetRef = useTemplateRef('target');
 const drawableRef = useTemplateRef('drawable');
 
+const volume = ref<number>(0);
+
+let getMatchPercentage: Function;
+
 onMounted(() => {
     document.documentElement.style.overflow = 'hidden';
 
+    // draw image on left canvas
     const img = new Image();
-    console.log(img);
     img.addEventListener('load', e => console.log('loaded!', e))
     img.onload = () => {
         const targetCtx = targetRef.value.getContext('2d');
         targetCtx.drawImage(img, 0, 0);
-        console.log(targetCtx);
     }
     img.src = 'src/components/einstein.bmp';
 
+    // load WebAssembly module
     (async () => {
         const mod = await Draw({
             canvas: drawableRef.value,
         });
+        getMatchPercentage = mod._get_match_percentage;
     })();
 });
 
@@ -61,7 +68,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-header {
+p#header {
     color: #777;
     font-family: sans-serif;
     position: fixed;
@@ -82,6 +89,10 @@ canvas {
 
     width: calc(128px * 3);
     image-rendering: pixelated;
+
+    &#drawable {
+        cursor: none !important; /* fighting with emscripten's generated draw.js */
+    }
 }
 
 .canvases {
