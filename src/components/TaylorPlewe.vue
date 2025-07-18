@@ -26,6 +26,10 @@
                 ></canvas>
             </div>
         </div>
+
+        <div id="slider">
+            <div id="fill" :style="`width: ${volume}%`"></div>
+        </div>
     </main>
 </template>
 
