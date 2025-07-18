@@ -1,17 +1,42 @@
 <script setup>
-import { computed, ref } from 'vue';
-import { onKeyStroke, useCountdown } from '@vueuse/core';
+import { computed, ref, useTemplateRef } from 'vue';
+import { onKeyStroke, useAnimate, useCountdown } from '@vueuse/core';
 
-const TYPING_TEST_WORDS = "Bacon ipsum dolor amet short loin landjaeger pork loin, beef sirloin burgdoggen hamburger pig doner. Ground round jerky tail buffalo, pastrami tongue sausage turducken pig chuck t-bone capicola shankle tri-tip. Tenderloin alcatra jerky turkey t-bone. Sausage andouille porchetta kevin drumstick beef. Strip steak swine jerky ribeye cow chicken pig meatloaf boudin ground round sausage turkey beef ribs pastrami. Biltong boudin bacon drumstick, andouille beef ribs beef shoulder. Tail shoulder turducken, chicken frankfurter tri-tip turkey beef ribs. Shankle doner brisket jowl boudin filet mignon. Boudin pork loin brisket spare ribs frankfurter rump. Tongue sausage turkey chislic pork chop chuck beef ribeye turducken. Cow doner jowl sirloin, short loin pork chop rump ground round buffalo venison turducken pork loin. Bresaola beef filet mignon shankle tri-tip hamburger corned beef shoulder chicken picanha ground round bacon jerky pork. Pig tail prosciutto kielbasa beef pork, jerky short ribs meatloaf ground round fatback ham salami. Drumstick tail ball tip, chicken pork loin tenderloin fatback jerky swine alcatra corned beef pastrami short ribs. Short ribs ribeye burgdoggen pork belly. Meatloaf frankfurter bresaola tongue andouille, turducken ball tip pancetta ham jerky picanha shankle chicken shank buffalo. Sausage jerky prosciutto meatloaf, cow chuck landjaeger short loin meatball tri-tip hamburger salami corned beef chicken tenderloin. Flank drumstick biltong pastrami, cupim filet mignon jowl pork loin beef ribs swine bacon pig picanha. Chislic pork chop jerky tri-tip porchetta landjaeger sirloin chuck corned beef pastrami picanha pancetta biltong chicken. Meatloaf frankfurter boudin short ribs strip steak ball tip."
+const TYPING_TEST_WORDS = "Bacon ipsum dolor amet short loin landjaeger pork loin, beef sirloin burgdoggen hamburger pig doner. Ground round jerky tail buffalo, pastrami tongue sausage turducken pig chuck t-bone capicola shankle tri-tip. Tenderloin alcatra jerky turkey t-bone. Sausage andouille porchetta kevin drumstick beef. Strip steak swine jerky ribeye cow chicken pig meatloaf boudin ground round sausage turkey beef ribs pastrami. Biltong boudin bacon drumstick, andouille beef ribs beef shoulder. Tail shoulder turducken, chicken frankfurter tri-tip turkey beef ribs. Shankle doner brisket jowl boudin filet mignon. Boudin pork loin brisket spare ribs frankfurter rump. Tongue sausage turkey chislic pork chop chuck beef ribeye turducken. Cow doner jowl sirloin, short loin pork chop rump ground round buffalo venison turducken pork loin. Bresaola beef filet mignon shankle tri-tip hamburger corned beef shoulder chicken picanha ground round bacon jerky pork. Pig tail prosciutto kielbasa beef pork, jerky short ribs meatloaf ground round fatback ham salami. Drumstick tail ball tip, chicken pork loin tenderloin fatback jerky swine alcatra corned beef pastrami short ribs."
 
 const userTypedWords = ref('');
 const typingTestStarted = ref(false);
+
+const typingTestContainer = useTemplateRef('typingTestContainer');
+
+const { play, pause } = useAnimate(
+    typingTestContainer,
+    [
+        { transform: 'translate(0, 0)' },
+        { transform: 'translate(-50%, 0)' },
+        { transform: 'translate(0, 0)' },
+        { transform: 'translate(50%, 0)' },
+        { transform: 'translate(0, 0)' },
+        { transform: 'translate(-50%, 0) rotate(-360deg)' },
+        { transform: 'translate(0, 0) rotate(0deg)' },
+        { transform: 'translate(50%, 0) rotate(360deg)' },
+        { transform: 'translate(0, 0) rotate(0deg)' },
+    ],
+    {
+        duration: 60000,
+        easing: 'linear',
+        iterations: Infinity,
+        immediate: false,
+        commitStyles: true,
+    },
+);
 
 const { remaining, start, reset } = useCountdown(60, {
     onComplete: () => {
         typingTestStarted.value = false;
         alert('Your volume was set to ' + wordsPerMinute.value + '%');
         stop();
+        pause();
     },
 });
 
@@ -46,6 +71,7 @@ onKeyStroke((e) => {
     if (!typingTestStarted.value && !userTypedWords.value) {
         typingTestStarted.value = true;
         start();
+        play();
     }
 
     if (e.key === 'Enter' || e.key === 'Shift' || e.key === 'Control' || e.key === 'Alt') {
@@ -78,7 +104,7 @@ onKeyStroke((e) => {
                 <button v-if="!typingTestStarted && userTypedWords.length > 0" @click="retryTest">Reset</button>
             </div>
         </div>
-        <div class="typing-test">
+        <div ref="typingTestContainer" class="typing-test">
             <p>
                 <span
                     v-for="(word, index) in TYPING_TEST_WORDS.split(' ')"
@@ -101,6 +127,7 @@ onKeyStroke((e) => {
 .typing-powered-volume-slider {
     height: 100vh;
     width: 100%;
+    padding-top: 40px;
     display: flex;
     flex-direction: column;
     align-items: center;
