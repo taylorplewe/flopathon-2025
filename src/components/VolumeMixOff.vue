@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import Knob from './sub-component/knob.vue';
+import Knob from './VolumeMixOff/knob.vue';
 
 export default {
     name: 'VolumeMixOff',
@@ -77,6 +77,7 @@ export default {
     },
     watch: {
         volume(newVal, oldVal) {
+            console.log(`Volume changed from ${oldVal} to ${newVal}`);
             if (newVal > 100 || newVal < -5) {
                 // Stop crowd audio
                 const crowdAudio = this.$refs.crowdAudio;
@@ -107,14 +108,14 @@ export default {
         }
     },
     mounted() {
-        // Set initial audio volume
-        this.setCrowdVolume(this.volume);
-        // Ensure audio plays on mount (some browsers require user interaction)
+        // Set initial audio volume to 0 (silent)
         const audio = this.$refs.crowdAudio;
         if (audio) {
-            audio.volume = Math.max(0, Math.min(1, this.volume / 100));
-            audio.play().catch(() => {});
+            audio.volume = this.volume;
+            audio.play();
         }
+        // Set the CSS variable for shake
+        document.documentElement.style.setProperty('--volume', this.volume);
     },
     methods: {
         increaseVolume() {
