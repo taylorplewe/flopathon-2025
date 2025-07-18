@@ -126,8 +126,6 @@ int main(int argc, char** argv) {
   SDL_CreateWindowAndRenderer(WIDTH, HEIGHT, 0, &window, &renderer);
   surface = SDL_CreateRGBSurface(0, WIDTH, HEIGHT, BPP, 0, 0, 0, 0);
 
-  printf("ehre we go\n");
-
   emscripten_set_mousedown_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, 1, mouse_callback);
   emscripten_set_mouseup_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, 1, mouse_callback);
   emscripten_set_mousemove_callback("canvas#drawable", 0, 1, mouse_callback);

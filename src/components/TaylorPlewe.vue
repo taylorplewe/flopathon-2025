@@ -1,5 +1,4 @@
 <template>
-    <p id="header">(the volume is determined by how similar your painting is to the painting on the left)</p>
     <main>
         <div class="canvases">
             <div class="canvas-with-label">
@@ -24,11 +23,22 @@
                     tabindex="-1"
                     @contextmenu="e => e.preventDefault()"
                 ></canvas>
+                <dl id="controls">
+                    <dt>Left click</dt>
+                    <dd>Draw</dd>
+                    <dt>Right click</dt>
+                    <dd>Erase</dd>
+                    <dt>Mouse wheel</dt>
+                    <dd>Change pencil size</dd>
+                </dl>
             </div>
         </div>
 
-        <div id="slider">
-            <div id="fill" :style="`width: ${volume}%`"></div>
+        <div id="slider-and-label">
+            <label for="slider">Volume: <strong>{{ Math.round(volume) }}%</strong></label>
+            <div id="slider">
+                <div id="fill" :style="`width: ${volume}%`"></div>
+            </div>
         </div>
     </main>
 </template>
@@ -94,13 +104,11 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-p#header {
-    color: #777;
+p, label {
+    font-size: 16pt;
     font-family: sans-serif;
-    position: fixed;
-    top: 56px;
-    left: 50%;
-    translate: -50% 0;
+    color: #444;
+    margin: 0;
 }
 main {
     position: fixed;
@@ -132,11 +140,16 @@ canvas {
     gap: 64px;
 }
 .canvas-with-label {
-    color: #777;
-    font-family: sans-serif;
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;    
+    gap: 8px;
+}
+
+#slider-and-label {
+    display: flex;
+    flex-direction: column;
     gap: 8px;
 }
 #slider {
@@ -152,5 +165,29 @@ canvas {
         height: 100%;
         background-color: #4b4;
     }
+}
+
+dl#controls {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    translate: 110% 0;
+    margin: 0;
+    pointer-events: none;
+    font-family: sans-serif;
+
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 8px;
+
+    & > dt {
+        font-style: italic;
+    }
+    & > dd {
+        margin: 0;
+    }
+}
+dd {
+    margin: 0;
 }
 </style>
