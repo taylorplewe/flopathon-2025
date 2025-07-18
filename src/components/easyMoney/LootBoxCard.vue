@@ -169,6 +169,7 @@ onUnmounted(() => {
 .holographic::before {
     content: "";
     position: absolute;
+    border-radius: 8px;
     top: 0;
     left: 0;
     right: 0;

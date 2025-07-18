@@ -1,31 +1,558 @@
 
 <template>
     <div class="loot-box">
-        <div class="loot-box-header">
-            <h1>Loot Box</h1>
+        <div class="loot-box__background">
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(17) }}
+            {{ scrambledText() }}
+            <i v-for="i in 7" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(35) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 5" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(17) }}
+            {{ scrambledText() }}
+            <i v-for="i in 7" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(35) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 5" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(17) }}
+            {{ scrambledText() }}
+            <i v-for="i in 7" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(35) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 5" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(17) }}
+            {{ scrambledText() }}
+            <i v-for="i in 7" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(35) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 5" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(17) }}
+            {{ scrambledText() }}
+            <i v-for="i in 7" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(35) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 5" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(17) }}
+            {{ scrambledText() }}
+            <i v-for="i in 7" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(35) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 5" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(17) }}
+            {{ scrambledText() }}
+            <i v-for="i in 7" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(35) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 5" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(17) }}
+            {{ scrambledText() }}
+            <i v-for="i in 7" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(35) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 5" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(17) }}
+            {{ scrambledText() }}
+            <i v-for="i in 7" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(35) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 5" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(17) }}
+            {{ scrambledText() }}
+            <i v-for="i in 7" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(35) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 5" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(17) }}
+            {{ scrambledText() }}
+            <i v-for="i in 7" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(35) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 5" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(17) }}
+            {{ scrambledText() }}
+            <i v-for="i in 7" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(35) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 5" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(17) }}
+            {{ scrambledText() }}
+            <i v-for="i in 7" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(35) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 5" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(17) }}
+            {{ scrambledText() }}
+            <i v-for="i in 7" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(35) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 5" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(17) }}
+            {{ scrambledText() }}
+            <i v-for="i in 7" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(35) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 5" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(5) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(17) }}
+            {{ scrambledText() }}
+            <i v-for="i in 7" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            {{ scrambledText(35) }}
+            <i v-for="i in 4" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
+            <i v-for="i in 5" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText(30) }}
+            {{ scrambledText() }}
+            <i v-for="i in 10" :key="i" :class="['ph-fill', randomIcon()]"></i>
+            {{ scrambledText() }}
         </div>
-        <div class="loot-box__cards-container">
-            <div class="loot-box__cards" :style="cardsStyle">
-                <loot-box-card
-                    v-for="(initialCard, index) in initialCards"
-                    :index="index"
-                    :key="initialCard.id"
-                    :rarity="initialCard.rarity"
-                    :volume="initialCard.volume"
-                />
-                <loot-box-card
-                    v-for="(card, index) in cards"
-                    :index="index"
-                    :key="card.id"
-                    :rarity="buttonDisabled ? getFakeRarity().rarity : card.rarity"
-                    :volume="buttonDisabled ? getFakeRarity().volume : card.volume"
-                    :winningIndex="winningIndex"
-                />
+
+            <div class="loot-box__cards-container-container">
+                <div class="loot-box__cards-container">
+                    <div class="loot-box__cards" :style="cardsStyle">
+                        <loot-box-card
+                            v-for="(card, index) in cards"
+                            :index="index"
+                            :key="card.id"
+                            :rarity="buttonDisabled || winningIndex !== index ? card.fake.rarity : card.rarity"
+                            :volume="buttonDisabled || winningIndex !== index ? card.fake.volume : card.volume"
+                            :winningIndex="winningIndex"
+                        />
+                </div>
             </div>
-            <i class="loot-box__icon ph-hand-pointing"></i>
+            <i class="loot-box__icon ph-fill ph-hand-pointing"></i>
         </div>
-        <button v-if="!isFlipped || buttonDisabled" :class="['loot-box__spin-button', { 'is-disabled': buttonDisabled }]" @click="onClick(true)">Spin!</button>
-        <button v-else :class="['loot-box__spin-button', { 'is-disabled': buttonDisabled }]" @click="onClick(false)">Accept!</button>
+        <click-combo-counter
+            v-if="!isFlipped || buttonDisabled"
+            class="loot-box__combo"
+            :click-count="clickCount"
+            :k-o="clickThreshold"
+        >
+            <button
+                :class="['loot-box__spin-button', { 'is-disabled': buttonDisabled }]"
+                @click="onClick(true)"
+            >
+                Spin!
+            </button>
+        </click-combo-counter>
+        <click-combo-counter
+            v-else
+            class="loot-box__combo"
+            :click-count="clickCount"
+            :k-o="clickThreshold"
+        >
+            <button
+                :class="['loot-box__spin-button', { 'is-disabled': buttonDisabled }]"
+                @click="onClick(false)"
+            >
+                Accept!
+            </button>
+        </click-combo-counter>
     </div>
 </template>
 
@@ -36,14 +563,14 @@ import { useRouter } from 'vue-router';
 
 import LootBoxCard from './LootBoxCard.vue';
 import { useVolumeStore } from './useVolumeStore.js';
+import ClickComboCounter from './ClickComboCounter.vue';
 
-const cardCount = 50;
+const cardCount = 75; // Set the desired number of cards
 const cardWidth = 320;
 const cardGap = 24;
 
 const router = useRouter();
 
-const initialCards = ref([]);
 const cards = ref([]);
 const cardsStyle = ref({
     transform: 'translateX(0)',
@@ -68,87 +595,135 @@ const generateCardData = () => {
     const random = Math.random();
     let rarity, volume;
 
+    const fakeData = getFakeRarity();
+
     if (random < 0.01) {
-        // 3% chance for Legendary (best volume)
         rarity = RARITIES.LEGENDARY;
         volume = Math.floor(Math.random() * 11) + 45; // 45-55
     } else if (random < 0.05) {
-        // 12% chance for Rare (good volume)
         rarity = RARITIES.RARE;
-        volume = Math.floor(Math.random() * 16) + 55; // 55-70
+        if (Math.random() < 0.5) {
+            volume = Math.floor(Math.random() * 19) + 26; // 26-44
+        } else {
+            volume = Math.floor(Math.random() * 19) + 56; // 56-74
+        }
     } else if (random < 0.40) {
-        // 25% chance for Uncommon (decent volume)
         rarity = RARITIES.UNCOMMON;
         volume = Math.floor(Math.random() * 26) + 75; // 75-100
     } else {
-        // 60% chance for Common (annoying volume)
         rarity = RARITIES.COMMON;
         volume = Math.floor(Math.random() * 25) + 1; // 1-25
     }
-    return { rarity, volume };
+    return { rarity, volume, fake: fakeData };
 };
 
 const getFakeRarity = () => {
     const random = Math.random();
     let rarity, volume;
 
-    if (random < 0.20) {
-        // 3% chance for Legendary (best volume)
+    if (random < 0.40) {
         rarity = RARITIES.LEGENDARY;
         volume = Math.floor(Math.random() * 11) + 45; // 45-55
-    } else if (random < 0.40) {
-        // 12% chance for Rare (good volume)
+    } else if (random < 0.80) {
         rarity = RARITIES.RARE;
         volume = Math.floor(Math.random() * 16) + 55; // 55-70
-    } else if (random < 0.60) {
-        // 25% chance for Uncommon (decent volume)
+    } else if (random < 0.90) {
         rarity = RARITIES.UNCOMMON;
         volume = Math.floor(Math.random() * 26) + 75; // 75-100
     } else {
-        // 60% chance for Common (annoying volume)
         rarity = RARITIES.COMMON;
         volume = Math.floor(Math.random() * 25) + 1; // 1-25
     }
     return { rarity, volume };
 }
 
+const randomIcon = () => {
+    const icons = ['ph-hand-pointing', 'ph-fingerprint', 'ph-hand-fist', 'ph-file-lock'];
+    return icons[Math.floor(Math.random() * icons.length)];
+};
+
+const funnyText = getFakeRarity.toString();
+
+const scrambledText = (length = 0, realText = funnyText) => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+    const keepCount = Math.floor(Math.random() * 21) + 15; // 15-35
+    const len = length || Math.floor(Math.random() * 30) + 10;
+    let result = '';
+
+    // Keep up to keepCount characters from realText, rest random
+    for (let i = 0; i < len; i++) {
+        if (realText && i < keepCount && i < realText.length) {
+            result += realText[i];
+        } else {
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+    }
+
+    return result;
+};
+
+const populateCards = () => {
+    const newCards = [];
+    for (let i = 0; i < cardCount; i++) {
+        newCards.push({ id: i + 1, ...generateCardData() });
+    }
+    cards.value = newCards;
+};
+
 const spinCards = () => {
     if (buttonDisabled.value) return;
     buttonDisabled.value = true;
-    for (let i = 0; i < cardCount; i++) {
-        cards.value.push({ id: i + 1, ...generateCardData() });
-    }
+    populateCards(); // Generate new cards for the spin
 
     isFlipped.value = true;
 
     setTimeout(() => {
         const containerWidth = 800;
-        const winningCardIndex = 25;
+        const winningCardIndex = Math.floor(cardCount / 2); // Center card is the winner
 
-        const totalWinningIndex = initialCards.value.length + winningCardIndex;
-        const winningCardCenter = (totalWinningIndex * (cardWidth + cardGap)) + (cardWidth / 2);
+        const winningCardCenter = (winningCardIndex * (cardWidth + cardGap)) + (cardWidth / 2);
         const finalTranslateX = (containerWidth / 2) - winningCardCenter;
 
-        const spinDistance = 1000;
+        // 1. Define animation parameters
+        const overshootAmount = 150; // How many pixels to overshoot
+        const overshootTranslateX = finalTranslateX - overshootAmount;
+        const spinDuration = 4.5; // seconds for the main spin
+        const settleDuration = 0.8; // seconds for settling back
 
+        const spinDistance = 2000; // A larger distance for a faster initial feel
         const startTranslateX = finalTranslateX + spinDistance;
+
+        // 2. Set initial position without transition
         cardsStyle.value = {
             transform: `translateX(${startTranslateX}px)`,
+            filter: 'blur(5px)', // Start with blur
             transition: 'none'
         };
 
+        // 3. Animate to the overshoot position
         requestAnimationFrame(() => {
             cardsStyle.value = {
-                transform: `translateX(${finalTranslateX}px)`,
-                transition: 'transform 5s cubic-bezier(0.1, 0.8, 0.2, 1)'
+                transform: `translateX(${overshootTranslateX}px)`,
+                filter: 'blur(0px)', // Remove blur during the spin
+                transition: `transform ${spinDuration}s cubic-bezier(0.25, 1, 0.5, 1), filter 1s ease-out`
             };
 
-            // Enable the button after the animation completes (5 seconds)
+            // 4. After the main spin, animate back to the final position
             setTimeout(() => {
-                buttonDisabled.value = false;
-                winningIndex.value = winningCardIndex;
-                selectedCardInfo.value = cards.value[winningCardIndex];
-            }, 5000);
+                cardsStyle.value = {
+                    transform: `translateX(${finalTranslateX}px)`,
+                    filter: 'blur(0px)',
+                    transition: `transform ${settleDuration}s ease-out`
+                };
+
+                // 5. Re-enable button and set winner after settle animation
+                setTimeout(() => {
+                    buttonDisabled.value = false;
+                    winningIndex.value = winningCardIndex;
+                    selectedCardInfo.value = cards.value[winningCardIndex];
+                }, settleDuration * 1000);
+
+            }, spinDuration * 1000);
         });
     }, 500);
 };
@@ -161,34 +736,27 @@ const resetCards = () => {
     store.setAdTimeout();
     router.push('/easy-money');
     winningIndex.value = -1;
-    let cardData = [];
-     for (let i = 0; i < 4; i++) {
-        cardData.push({ id: i + 1, ...generateCardData() });
-    }
-    initialCards.value = cardData;
 
     setTimeout(() => {
-        cardsStyle.value.transition = 'transform 0.5s ease';
         cardsStyle.value = {
             transform: 'translateX(0)',
-            transition: 'none'
+            transition: 'transform 0.5s ease'
         };
     }, 500);
 
     setTimeout(() => {
-        cards.value = [];
+        populateCards(); // Generate a new set of cards for the next round
         buttonDisabled.value = false;
     }, 1000);
 }
 
 onMounted(() => {
-    for (let i = 0; i < 4; i++) {
-        initialCards.value.push({ id: i + 1, ...generateCardData() });
-    }
+    populateCards();
 });
 
 const clickCount = ref(0);
 const onClick = (isSpin) => {
+    if (buttonDisabled.value) return;
     clickCount.value += 1;
     if (clickCount.value === clickThreshold.value) {
         clickCount.value = 0;
@@ -201,7 +769,6 @@ const onClick = (isSpin) => {
         }
     }
 }
-
 </script>
 
 <style scoped>
@@ -209,6 +776,13 @@ const onClick = (isSpin) => {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    height: 100vh;
+    justify-items: center;
+}
+
+.loot-box__cards-container-container {
+    background: #fff;
+    border-radius: 8px;
 }
 
 .loot-box__cards-container {
@@ -216,6 +790,9 @@ const onClick = (isSpin) => {
     margin: 0 auto;
     overflow: hidden;
     position: relative;
+    padding: 25px;
+    background: white;
+    border-radius: 4px;
 }
 
 .loot-box__cards-container::before,
@@ -261,12 +838,64 @@ const onClick = (isSpin) => {
 .loot-box__icon {
     display: flex;
     justify-content: center;
-    margin-top: 10px;
     font-size: 50px;
+    background-color: #EFBF04;
+    width: 800px;
+    margin: 10px auto;
+    border-radius: 4px;
 }
 
 .is-disabled {
     background-color: #ccc; /* gray */
     cursor: not-allowed;
+}
+
+.loot-box__combo {
+    margin: 20px auto;
+}
+
+.loot-box__background {
+    font-size: 50px;
+    position: absolute;
+    overflow-y: hidden;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+    background: repeating-linear-gradient(
+        135deg,
+        blue,
+        lightblue 10px,
+        white 10px,
+        lightcyan 20px
+    );
+    background-size: 200% 200%;
+    opacity: 0.5;
+    z-index: -1;
+    animation: moveBackground 40s linear infinite;
+}
+
+.loot-box__background .ph-hand-pointing {
+    display: inline-block; /* Required for transform */
+    animation: glitch-rotate 2s linear infinite;
+}
+
+@keyframes moveBackground {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 0 -100%;
+    }
+}
+
+@keyframes glitch-rotate {
+    0%, 49.9%, 75%, 100% {
+        transform: rotate(0deg);
+    }
+    50%, 74.9% {
+        transform: rotate(15deg);
+    }
 }
 </style>

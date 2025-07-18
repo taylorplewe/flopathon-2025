@@ -39,13 +39,13 @@ watch(() => isTimerActive.value, (active) => {
 
 <style scoped>
 main {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
 }
 
 h1 {

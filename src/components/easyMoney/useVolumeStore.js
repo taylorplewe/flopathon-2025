@@ -31,8 +31,7 @@ export const useVolumeStore = defineStore('volumeStore',() => {
     currentTimer.value = timerAmount;
     isTimerActive.value = true;
     setTimeout(() => {
-      const isVolumeCloserToZero = volume.value < 50;
-      volume.value = isVolumeCloserToZero ? 100 : 0;
+      volume.value = 0;
       isTimerActive.value = false;
     }, timerAmount);
   }
