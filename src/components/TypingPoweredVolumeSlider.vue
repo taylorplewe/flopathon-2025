@@ -10,6 +10,7 @@ const typingTestStarted = ref(false);
 const { remaining, start, reset } = useCountdown(60, {
     onComplete: () => {
         typingTestStarted.value = false;
+        alert('Your volume was set to ' + wordsPerMinute.value + '%');
         stop();
     },
 });
@@ -62,6 +63,21 @@ onKeyStroke((e) => {
 
 <template>
     <div class="typing-powered-volume-slider">
+        <h2>Type the prompt below for one minute at the WPM you would like your volume to be </h2>
+        <div class="slider-container">
+            <div class="slider">
+                <label>Volume {{ !typingTestStarted && userTypedWords.length > 0 ? `${wordsPerMinute}%` : '' }}</label>
+                <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    :value="!typingTestStarted && userTypedWords.length > 0 ? wordsPerMinute : 0"
+                    class="slider"
+                    disabled
+                />
+                <button v-if="!typingTestStarted && userTypedWords.length > 0" @click="retryTest">Reset</button>
+            </div>
+        </div>
         <div class="typing-test">
             <p>
                 <span
@@ -78,35 +94,24 @@ onKeyStroke((e) => {
                 </span>
             </p>
         </div>
-        <div class="slider-container">
-            <div class="slider">
-                <label>Volume {{ !typingTestStarted && userTypedWords.length > 0 ? `${wordsPerMinute}%` : '' }}</label>
-                <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    :value="!typingTestStarted && userTypedWords.length > 0 ? wordsPerMinute : 0"
-                    class="slider"
-                    disabled
-                />
-                <button v-if="!typingTestStarted && userTypedWords.length > 0" @click="retryTest">Retry</button>
-            </div>
-        </div>
     </div>
 </template>
 
 <style scoped>
 .typing-powered-volume-slider {
-    height: 100%;
+    height: 100vh;
     width: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 
     .typing-test {
-        height: 100%;
         width: 50%;
         margin-top: 40px;
+        padding: 20px;
+        font-family: fantasy;
+        background-color: rgba(0, 0, 0, .4)
     }
 
     .current-word {
@@ -126,8 +131,8 @@ onKeyStroke((e) => {
     }
 
     .slider-container {
-        height: 100%;
         width: 50%;
+        margin-top: 40px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -135,10 +140,7 @@ onKeyStroke((e) => {
         .slider {
             width: 200px;
             padding: 20px;
-            background-color: rgba(0, 0, 0, 0.5);
-
             input {
-                width: 160px;
                 padding: 0px;
                 cursor: not-allowed
             }
