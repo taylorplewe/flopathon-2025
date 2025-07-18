@@ -25,11 +25,17 @@ const filteredGames = computed(() => {
 const onFocusInput = (event) => {
     showDropdown.value = true;
     nextTick(() => {
-        if (event && event.target && typeof event.target.select === 'function') {
+        if (
+            event &&
+            event.target &&
+            typeof event.target.select === 'function'
+        ) {
             event.target.select();
         }
     });
 };
+
+const inputRef = useTemplateRef('inputRef');
 
 const onSelectGame = (game) => {
     selectedGame.value = game;
@@ -39,6 +45,12 @@ const onSelectGame = (game) => {
     if (audio.paused) {
         playAudio();
     }
+
+    nextTick(() => {
+        if (inputRef.value && typeof inputRef.value.blur === 'function') {
+            inputRef.value.select();
+        }
+    });
 };
 
 // --- Volume Calculation ---
@@ -125,8 +137,8 @@ watch(searchQuery, (val) => {
 <template>
     <div class="floppy">
         <div>
-            <span style="font-weight: 600">Volume</span> = board game <span style="color: #4f6df5">weight</span> *
-            20
+            <span style="font-weight: 600">Volume</span> = board game
+            <span style="color: #4f6df5">weight</span> * 20
         </div>
         <div>
             <span style="color: #4f6df5">Weight</span>: how difficult it is to
@@ -143,6 +155,7 @@ watch(searchQuery, (val) => {
         </div>
         <div class="floppy__input-container" ref="target">
             <input
+                ref="inputRef"
                 class="floppy__input"
                 v-model="searchQuery"
                 type="text"
