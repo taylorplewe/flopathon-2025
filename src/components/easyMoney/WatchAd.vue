@@ -144,7 +144,7 @@ video {
 .duration-text {
   z-index: 9999;
   position: absolute;
-  top: 20px;
+  top: 40px;
   right: 20px;
   color: white;
 }
