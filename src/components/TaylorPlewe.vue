@@ -36,12 +36,13 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, useTemplateRef } from 'vue';
 
-import Draw from './a.out.js';
+import Draw from './draw.js';
 
 const targetRef = useTemplateRef('target');
 const drawableRef = useTemplateRef('drawable');
 
 const volume = ref<number>(0);
+let targetPixels: Uint8ClampedArray;
 
 let getMatchPercentage: Function;
 let animationRequestHandle: number;
@@ -58,7 +59,8 @@ onMounted(() => {
     img.onload = () => {
         const targetCtx = targetRef.value.getContext('2d');
         targetCtx.drawImage(img, 0, 0);
-        //console.log('canvas data length', targetCtx.getImageData(0, 0, targetRef.value.width, targetRef.value.height).data.subarray(65532))
+        targetPixels = targetCtx.getImageData(0, 0, targetRef.value.width, targetRef.value.height).data;
+        console.info('targetPixels set ✅');
     }
     img.src = 'src/components/einstein.bmp';
 
@@ -69,7 +71,19 @@ onMounted(() => {
         });
         getMatchPercentage = mod._get_match_percentage;
         animationRequestHandle = requestAnimationFrame(updateVolumeFromMatchPercentage);
-        console.log('malloc?', mod._malloc);
+
+        // allocate memory in wasm land, blit Einstein's pixels to it
+        if (targetPixels) {
+            const pointer = mod._malloc(targetPixels.byteLength);
+            if (pointer === null) {
+                throw new Error('could not allocate memory from JavaScript!');
+            }
+            mod.HEAPU8.set(targetPixels, pointer / Uint8Array.BYTES_PER_ELEMENT);
+            mod._read_target_pixel_data(pointer, targetPixels.byteLength);
+            console.info('targetPixels sent to wasm ✅')
+        } else {
+            throw new Error('targetPixels was not set by the time the mod was initialized!');
+        }
     })();
 });
 

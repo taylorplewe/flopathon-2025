@@ -1,17 +1,16 @@
 // 2025 Taylor Plewe
 //
-// build with:
-//   emcc draw.c -o a.out.js \
+// once emscripten is installed build with:
+//   emcc draw.c -o draw.js \
 //   -O3 \
-//   -s USE_SDL=2 \
-//   -s MODULARIZE \
-//   -s EXPORT_ES6 \
+//   -s EXPORT_ES6=1 \
 //   -s EXPORT_NAME=draw \
-//   -s EXPORTED_FUNCTIONS='_get_match_percentage,_main' \
-//   -s EXPORTED_RUNTIME_METHODS='cwrap,ccall'"
+//   -s MODULARIZE=1 \
+//   -s USE_SDL=2 \
+//   -s EXPORTED_FUNCTIONS='_get_match_percentage,_read_target_pixel_data,_malloc,_free,_main' \
+//   -s EXPORTED_RUNTIME_METHODS='cwrap,ccall,HEAPU8'
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 #include <emscripten.h>
 #include <emscripten/html5.h>
 #include <stdio.h>
@@ -27,11 +26,11 @@
 #define PENCIL_MIN_RADIUS 0
 
 Uint8 draw_pixels[WIDTH * HEIGHT * (BPP/8)];
+Uint8* target_pixels;
 
 SDL_Window* window;
 SDL_Renderer* renderer;
 SDL_Surface* surface;
-SDL_Surface* target_surface;
 
 int pencil_radius = (PENCIL_MAX_RADIUS - PENCIL_MIN_RADIUS) / 2;
 int sdl_x, sdl_y;
@@ -72,7 +71,6 @@ void fill_circle(Uint8* mem, int x, int y, int r, Uint32 color) {
 }
 
 void update() {
-  // SDL_GetGlobalMouseState(&sdl_x, &sdl_y);
   SDL_RenderClear(renderer);
 
   // make modifications to surface
@@ -83,10 +81,6 @@ void update() {
 
   // second, draw the user's cursor on top of that
   fill_circle((Uint8*)surface->pixels, sdl_x, sdl_y, pencil_radius, 0x88888888);
-
-  // draw eisntein
-  SDL_Rect rect = { 0, 0, target_surface->w, target_surface->h };
-  SDL_BlitSurface(target_surface, NULL, surface, &rect);
 
   if (SDL_MUSTLOCK(surface)) SDL_UnlockSurface(surface);
 
@@ -125,17 +119,6 @@ bool wheel_callback(int eventType, const EmscriptenWheelEvent* e, void* userData
   return 0;
 }
 
-float match_percentage = 0.0f;
-EMSCRIPTEN_KEEPALIVE
-float get_match_percentage() {
-  int num_matched = 0;
-  Uint8* target_pixels = (Uint8*)target_surface->pixels;
-  for (int i = 0; i < WIDTH * HEIGHT * (BPP/8); i++) {
-    if (draw_pixels[i] == target_pixels[i]) num_matched++;
-  }
-  return (float)num_matched / (WIDTH * HEIGHT * (BPP/8));
-}
-
 int main(int argc, char** argv) {
   memset(draw_pixels, COL_BG & 0xff, WIDTH * HEIGHT * (BPP/8));
   
@@ -144,15 +127,31 @@ int main(int argc, char** argv) {
   surface = SDL_CreateRGBSurface(0, WIDTH, HEIGHT, BPP, 0, 0, 0, 0);
 
   printf("ehre we go\n");
-  target_surface = IMG_Load("einstein.bmp");
-  if (!target_surface) {
-    printf("uh oh\n");
-    printf("%s\n", IMG_GetError());
-  }
 
   emscripten_set_mousedown_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, 1, mouse_callback);
   emscripten_set_mouseup_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, 1, mouse_callback);
   emscripten_set_mousemove_callback("canvas#drawable", 0, 1, mouse_callback);
   emscripten_set_wheel_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, 0, 1, wheel_callback);
   emscripten_set_main_loop(update, 0, 1);
+}
+
+// exported functions
+float match_percentage = 0.0f;
+EMSCRIPTEN_KEEPALIVE
+float get_match_percentage() {
+  int num_matched = 0;
+  for (int i = 0; i < WIDTH * HEIGHT * (BPP/8); i += BPP/8) {
+    if (
+      draw_pixels[i] == target_pixels[i]
+      && draw_pixels[i+1] == target_pixels[i+1]
+      && draw_pixels[i+2] == target_pixels[i+2]
+      // do not compare alpha channel; they will always match
+    ) num_matched++;
+  }
+  return (float)num_matched / (WIDTH * HEIGHT);
+}
+
+EMSCRIPTEN_KEEPALIVE
+void read_target_pixel_data(Uint8* data, int data_length) {
+  target_pixels = data;
 }
