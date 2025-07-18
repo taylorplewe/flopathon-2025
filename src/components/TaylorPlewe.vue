@@ -55,10 +55,10 @@ onMounted(() => {
 
     // draw image on left canvas
     const img = new Image();
-    img.addEventListener('load', e => console.log('loaded!', e))
     img.onload = () => {
         const targetCtx = targetRef.value.getContext('2d');
         targetCtx.drawImage(img, 0, 0);
+        //console.log('canvas data length', targetCtx.getImageData(0, 0, targetRef.value.width, targetRef.value.height).data.subarray(65532))
     }
     img.src = 'src/components/einstein.bmp';
 
@@ -69,6 +69,7 @@ onMounted(() => {
         });
         getMatchPercentage = mod._get_match_percentage;
         animationRequestHandle = requestAnimationFrame(updateVolumeFromMatchPercentage);
+        console.log('malloc?', mod._malloc);
     })();
 });
 
