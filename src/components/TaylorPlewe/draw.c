@@ -29,6 +29,9 @@
 #define PENCIL_MAX_RADIUS 28
 #define PENCIL_MIN_RADIUS 0
 
+#define min(a, b) (a < b ? a : b)
+#define max(a, b) (a > b ? a : b)
+
 Uint8 draw_pixels[WIDTH * HEIGHT * (BPP/8)];
 Uint8* target_pixels;
 
@@ -82,10 +85,54 @@ void fill_circle(Uint8* mem, int x, int y, int r, Uint32 color) {
 }
 
 void fill_segment(Uint8* mem, Point p1, Point p2, int r, Uint32 color) {
+  last_mouse_point = curr_mouse_point; // debug
   float theta = SDL_atan2f(p2.y - p1.y, p2.x - p1.x);
   float theta_perp = theta + PI/2;
   float x_offs = r * SDL_cosf(theta_perp);
   float y_offs = r * SDL_sinf(theta_perp);
+  Point a = { p2.x + x_offs, p2.y + y_offs };
+  Point b = { p1.x + x_offs, p1.y + y_offs };
+  Point c = { p2.x - x_offs, p2.y - y_offs };
+  Point d = { p1.x - x_offs, p1.y - y_offs };
+  Point ab = { b.x - a.x, b.y - a.y };
+  Point ac = { c.x - a.x, c.y - a.y };
+  float len1_sq = ab.x * ab.x + ab.y * ab.y;
+  float len2_sq = ac.x * ac.x + ac.y * ac.y;
+
+  if (a.x < 0 || a.y < 0 || b.x < 0 || b.y < 0 || c.x < 0 || c.y < 0 || d.x < 0 || d.y < 0) return;
+  int bound_upper = min(min(min(a.y, b.y), c.y), d.y);
+  int bound_left = min(min(min(a.x, b.x), c.x), d.x);
+  int bound_bottom = max(max(max(a.y, b.y), c.y), d.y);
+  int bound_right = max(max(max(a.x, b.x), c.x), d.x);
+
+  for (int row = bound_upper; row <= bound_bottom; row++) {
+    for (int col = bound_left; col <= bound_right; col++) {
+      Point p = { col, row };
+      Point ap = { p.x - a.x, p.y - a.y };
+      float dot1 = ab.x * ap.x + ab.y * ap.y;
+      float dot2 = ac.x * ap.x + ac.y * ap.y;
+
+      if (0 <= dot1 && dot1 <= len1_sq && 0 <= dot2 && dot2 <= len2_sq) {
+        mem[(row * WIDTH * BPP/8) + (col * BPP/8)] = 0;
+        mem[(row * WIDTH * BPP/8) + (col * BPP/8) + 1] = 0;
+        mem[(row * WIDTH * BPP/8) + (col * BPP/8) + 2] = 0;
+      }
+    }
+  }
+
+  // mem[(a.y * WIDTH * BPP/8) + (a.x * BPP/8)] = 0;
+  // mem[(a.y * WIDTH * BPP/8) + (a.x * BPP/8) + 1] = 0;
+  // mem[(a.y * WIDTH * BPP/8) + (a.x * BPP/8) + 2] = 0;
+
+  // if (b.x < 0 || b.y < 0) return;
+  // mem[(b.y * WIDTH * BPP/8) + (b.x * BPP/8)] = 0;
+  // mem[(b.y * WIDTH * BPP/8) + (b.x * BPP/8) + 1] = 0;
+  // mem[(b.y * WIDTH * BPP/8) + (b.x * BPP/8) + 2] = 0;
+
+  // if (c.x < 0 || c.y < 0) return;
+  // mem[(c.y * WIDTH * BPP/8) + (c.x * BPP/8)] = 0;
+  // mem[(c.y * WIDTH * BPP/8) + (c.x * BPP/8) + 1] = 0;
+  // mem[(c.y * WIDTH * BPP/8) + (c.x * BPP/8) + 2] = 0;
 }
 
 // mouse event handlers
@@ -97,10 +144,8 @@ bool mouse_callback(int eventType, const EmscriptenMouseEvent* e, void* userData
   }
   else if (eventType == EMSCRIPTEN_EVENT_MOUSEUP) mouse_button_down = MouseButtonNone;
   else if (eventType == EMSCRIPTEN_EVENT_MOUSEMOVE) {
-    last_mouse_point = curr_mouse_point;
     curr_mouse_point.x = e->targetX / CANVAS_SCALE;
     curr_mouse_point.y = e->targetY / CANVAS_SCALE;
-    mouse_button_down = MouseButtonNone;
   }
   return 0;
 }
@@ -116,7 +161,8 @@ void update() {
   if (mouse_button_down != MouseButtonNone) {
     Uint32 col = mouse_button_down == MouseButtonLeft ? COL_FG : COL_BG;
     fill_segment(draw_pixels, last_mouse_point, curr_mouse_point, pencil_radius, col);
-    fill_circle(draw_pixels, curr_mouse_point.x, curr_mouse_point.y, pencil_radius, col);
+    // fill_circle(draw_pixels, curr_mouse_point.x, curr_mouse_point.y, pencil_radius, col);
+    mouse_button_down = MouseButtonNone; // debug
   }
 
   SDL_RenderClear(renderer);
