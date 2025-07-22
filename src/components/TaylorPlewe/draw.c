@@ -99,11 +99,10 @@ void fill_segment(Uint8* mem, Point p1, Point p2, int r, Uint32 color) {
   float len1_sq = ab.x * ab.x + ab.y * ab.y;
   float len2_sq = ac.x * ac.x + ac.y * ac.y;
 
-  if (a.x < 0 || a.y < 0 || b.x < 0 || b.y < 0 || c.x < 0 || c.y < 0 || d.x < 0 || d.y < 0) return;
-  int bound_upper = min(min(min(a.y, b.y), c.y), d.y);
-  int bound_left = min(min(min(a.x, b.x), c.x), d.x);
-  int bound_bottom = max(max(max(a.y, b.y), c.y), d.y);
-  int bound_right = max(max(max(a.x, b.x), c.x), d.x);
+  int bound_upper = max(min(min(min(a.y, b.y), c.y), d.y), 0);
+  int bound_left = max(min(min(min(a.x, b.x), c.x), d.x), 0);
+  int bound_bottom = min(max(max(max(a.y, b.y), c.y), d.y), HEIGHT - 1);
+  int bound_right = min(max(max(max(a.x, b.x), c.x), d.x), WIDTH - 1);
 
   for (int row = bound_upper; row <= bound_bottom; row++) {
     for (int col = bound_left; col <= bound_right; col++) {
@@ -119,20 +118,6 @@ void fill_segment(Uint8* mem, Point p1, Point p2, int r, Uint32 color) {
       }
     }
   }
-
-  // mem[(a.y * WIDTH * BPP/8) + (a.x * BPP/8)] = 0;
-  // mem[(a.y * WIDTH * BPP/8) + (a.x * BPP/8) + 1] = 0;
-  // mem[(a.y * WIDTH * BPP/8) + (a.x * BPP/8) + 2] = 0;
-
-  // if (b.x < 0 || b.y < 0) return;
-  // mem[(b.y * WIDTH * BPP/8) + (b.x * BPP/8)] = 0;
-  // mem[(b.y * WIDTH * BPP/8) + (b.x * BPP/8) + 1] = 0;
-  // mem[(b.y * WIDTH * BPP/8) + (b.x * BPP/8) + 2] = 0;
-
-  // if (c.x < 0 || c.y < 0) return;
-  // mem[(c.y * WIDTH * BPP/8) + (c.x * BPP/8)] = 0;
-  // mem[(c.y * WIDTH * BPP/8) + (c.x * BPP/8) + 1] = 0;
-  // mem[(c.y * WIDTH * BPP/8) + (c.x * BPP/8) + 2] = 0;
 }
 
 // mouse event handlers
@@ -161,7 +146,7 @@ void update() {
   if (mouse_button_down != MouseButtonNone) {
     Uint32 col = mouse_button_down == MouseButtonLeft ? COL_FG : COL_BG;
     fill_segment(draw_pixels, last_mouse_point, curr_mouse_point, pencil_radius, col);
-    // fill_circle(draw_pixels, curr_mouse_point.x, curr_mouse_point.y, pencil_radius, col);
+    fill_circle(draw_pixels, curr_mouse_point.x, curr_mouse_point.y, pencil_radius, col);
     mouse_button_down = MouseButtonNone; // debug
   }
 
