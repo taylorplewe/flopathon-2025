@@ -10,7 +10,7 @@
 //   -s EXPORTED_FUNCTIONS='_get_match_percentage,_read_target_pixel_data,_malloc,_free,_main' \
 //   -s EXPORTED_RUNTIME_METHODS='cwrap,ccall,HEAPU8'
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <emscripten.h>
 #include <emscripten/html5.h>
 #include <stdio.h>
@@ -35,12 +35,18 @@ SDL_Surface* surface;
 int pencil_radius = (PENCIL_MAX_RADIUS - PENCIL_MIN_RADIUS) / 2;
 int sdl_x, sdl_y;
 
-enum MouseButton {
+typedef enum MouseButton {
   MouseButtonNone,
   MouseButtonLeft,
   MouseButtonRight
-};
-enum MouseButton mouse_button_down = MouseButtonNone;
+} MouseButton;
+MouseButton mouse_button_down = MouseButtonNone;
+
+typedef struct Point {
+  int x;
+  int y;
+} Point;
+Point prev_pos;
 
 void fill_circle(Uint8* mem, int x, int y, int r, Uint32 color) {
   for (int w = 0; w <= r*2; w++) {
@@ -72,14 +78,16 @@ void fill_circle(Uint8* mem, int x, int y, int r, Uint32 color) {
 
 // mouse event handlers
 bool mouse_callback(int eventType, const EmscriptenMouseEvent* e, void* userData) {
-  if (eventType == EMSCRIPTEN_EVENT_MOUSEDOWN)
+  if (eventType == EMSCRIPTEN_EVENT_MOUSEDOWN) {
     mouse_button_down = e->button == 0
       ? MouseButtonLeft
       : MouseButtonRight;
+  }
   else if (eventType == EMSCRIPTEN_EVENT_MOUSEUP) mouse_button_down = MouseButtonNone;
   else if (eventType == EMSCRIPTEN_EVENT_MOUSEMOVE) {
     sdl_x = e->targetX / 3;
     sdl_y = e->targetY / 3;
+    mouse_button_down = MouseButtonNone;
   }
   return 0;
 }

@@ -1,0 +1,5 @@
+CompileFlags:
+  Add: [
+    "-IC:/Users/TaylorPlewe/Documents/SDL2-devel-2.32.6-VC/SDL2-2.32.6/include",
+    "-IC:/Users/TaylorPlewe/webroot/emsdk/upstream/emscripten/system/include"
+  ]
