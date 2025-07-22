@@ -52,6 +52,10 @@ typedef struct Point {
   int x;
   int y;
 } Point;
+typedef struct PointF {
+  float x;
+  float y;
+} PointF;
 Point curr_mouse_point;
 Point last_mouse_point;
 
@@ -90,12 +94,12 @@ void fill_segment(Uint8* mem, Point p1, Point p2, int r, Uint32 color) {
   float theta_perp = theta + PI/2;
   float x_offs = r * SDL_cosf(theta_perp);
   float y_offs = r * SDL_sinf(theta_perp);
-  Point a = { p2.x + x_offs, p2.y + y_offs };
-  Point b = { p1.x + x_offs, p1.y + y_offs };
-  Point c = { p2.x - x_offs, p2.y - y_offs };
-  Point d = { p1.x - x_offs, p1.y - y_offs };
-  Point ab = { b.x - a.x, b.y - a.y };
-  Point ac = { c.x - a.x, c.y - a.y };
+  PointF a = { p2.x + x_offs, p2.y + y_offs };
+  PointF b = { p1.x + x_offs, p1.y + y_offs };
+  PointF c = { p2.x - x_offs, p2.y - y_offs };
+  PointF d = { p1.x - x_offs, p1.y - y_offs };
+  PointF ab = { b.x - a.x, b.y - a.y };
+  PointF ac = { c.x - a.x, c.y - a.y };
   float len1_sq = ab.x * ab.x + ab.y * ab.y;
   float len2_sq = ac.x * ac.x + ac.y * ac.y;
 
@@ -107,7 +111,7 @@ void fill_segment(Uint8* mem, Point p1, Point p2, int r, Uint32 color) {
   for (int row = bound_upper; row <= bound_bottom; row++) {
     for (int col = bound_left; col <= bound_right; col++) {
       Point p = { col, row };
-      Point ap = { p.x - a.x, p.y - a.y };
+      PointF ap = { p.x - a.x, p.y - a.y };
       float dot1 = ab.x * ap.x + ab.y * ap.y;
       float dot2 = ac.x * ap.x + ac.y * ap.y;
 
@@ -123,6 +127,7 @@ void fill_segment(Uint8* mem, Point p1, Point p2, int r, Uint32 color) {
 // mouse event handlers
 bool mouse_callback(int eventType, const EmscriptenMouseEvent* e, void* userData) {
   if (eventType == EMSCRIPTEN_EVENT_MOUSEDOWN) {
+    last_mouse_point = curr_mouse_point; // debug
     mouse_button_down = e->button == 0
       ? MouseButtonLeft
       : MouseButtonRight;
@@ -147,7 +152,7 @@ void update() {
     Uint32 col = mouse_button_down == MouseButtonLeft ? COL_FG : COL_BG;
     fill_segment(draw_pixels, last_mouse_point, curr_mouse_point, pencil_radius, col);
     fill_circle(draw_pixels, curr_mouse_point.x, curr_mouse_point.y, pencil_radius, col);
-    mouse_button_down = MouseButtonNone; // debug
+    // mouse_button_down = MouseButtonNone; // debug
   }
 
   SDL_RenderClear(renderer);
