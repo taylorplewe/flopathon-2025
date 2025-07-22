@@ -10,6 +10,7 @@
 //   -s EXPORTED_FUNCTIONS='_get_match_percentage,_read_target_pixel_data,_malloc,_free,_main' \
 //   -s EXPORTED_RUNTIME_METHODS='cwrap,ccall,HEAPU8'
 
+#include "SDL_stdinc.h"
 #include <SDL.h>
 #include <emscripten.h>
 #include <emscripten/html5.h>
@@ -17,6 +18,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define PI 3.14159
+
+#define CANVAS_SCALE 3
 #define WIDTH 128
 #define HEIGHT 128
 #define BPP 32
@@ -33,7 +37,6 @@ SDL_Renderer* renderer;
 SDL_Surface* surface;
 
 int pencil_radius = (PENCIL_MAX_RADIUS - PENCIL_MIN_RADIUS) / 2;
-int sdl_x, sdl_y;
 
 typedef enum MouseButton {
   MouseButtonNone,
@@ -46,8 +49,10 @@ typedef struct Point {
   int x;
   int y;
 } Point;
-Point prev_pos;
+Point curr_mouse_point;
+Point last_mouse_point;
 
+/// Fill in a circle in an array of pixels
 void fill_circle(Uint8* mem, int x, int y, int r, Uint32 color) {
   for (int w = 0; w <= r*2; w++) {
     for (int h = 0; h <= r*2; h++) {
@@ -76,6 +81,13 @@ void fill_circle(Uint8* mem, int x, int y, int r, Uint32 color) {
   }
 }
 
+void fill_segment(Uint8* mem, Point p1, Point p2, int r, Uint32 color) {
+  float theta = SDL_atan2f(p2.y - p1.y, p2.x - p1.x);
+  float theta_perp = theta + PI/2;
+  float x_offs = r * SDL_cosf(theta_perp);
+  float y_offs = r * SDL_sinf(theta_perp);
+}
+
 // mouse event handlers
 bool mouse_callback(int eventType, const EmscriptenMouseEvent* e, void* userData) {
   if (eventType == EMSCRIPTEN_EVENT_MOUSEDOWN) {
@@ -85,8 +97,9 @@ bool mouse_callback(int eventType, const EmscriptenMouseEvent* e, void* userData
   }
   else if (eventType == EMSCRIPTEN_EVENT_MOUSEUP) mouse_button_down = MouseButtonNone;
   else if (eventType == EMSCRIPTEN_EVENT_MOUSEMOVE) {
-    sdl_x = e->targetX / 3;
-    sdl_y = e->targetY / 3;
+    last_mouse_point = curr_mouse_point;
+    curr_mouse_point.x = e->targetX / CANVAS_SCALE;
+    curr_mouse_point.y = e->targetY / CANVAS_SCALE;
     mouse_button_down = MouseButtonNone;
   }
   return 0;
@@ -102,7 +115,8 @@ void update() {
   // pencil update logic
   if (mouse_button_down != MouseButtonNone) {
     Uint32 col = mouse_button_down == MouseButtonLeft ? COL_FG : COL_BG;
-    fill_circle(draw_pixels, sdl_x, sdl_y, pencil_radius, col);
+    fill_segment(draw_pixels, last_mouse_point, curr_mouse_point, pencil_radius, col);
+    fill_circle(draw_pixels, curr_mouse_point.x, curr_mouse_point.y, pencil_radius, col);
   }
 
   SDL_RenderClear(renderer);
@@ -114,7 +128,7 @@ void update() {
   memcpy(surface->pixels, draw_pixels, WIDTH * HEIGHT * (BPP/8));
 
   // second, draw the user's cursor on top of that
-  fill_circle((Uint8*)surface->pixels, sdl_x, sdl_y, pencil_radius, 0x88888888);
+  fill_circle((Uint8*)surface->pixels, curr_mouse_point.x, curr_mouse_point.y, pencil_radius, 0x88888888);
 
   if (SDL_MUSTLOCK(surface)) SDL_UnlockSurface(surface);
 
