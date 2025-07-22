@@ -59,6 +59,18 @@ typedef struct PointF {
 Point curr_mouse_point;
 Point last_mouse_point;
 
+void color_pixel(Uint8* mem, int x, int y, Uint32 color) {
+  int index = ((y * WIDTH) + x) * BPP/8;
+  if (index < 0 || index >= WIDTH * HEIGHT * (BPP/8)) return;
+  int r =  color        & 0xff;
+  int g = (color >> 8)  & 0xff;
+  int b = (color >> 16) & 0xff;
+
+  mem[index    ] = r;
+  mem[index + 1] = g;
+  mem[index + 2] = b;
+}
+
 /// Fill in a circle in an array of pixels
 void fill_circle(Uint8* mem, int x, int y, int r, Uint32 color) {
   for (int w = 0; w <= r*2; w++) {
@@ -66,60 +78,73 @@ void fill_circle(Uint8* mem, int x, int y, int r, Uint32 color) {
       int dx = r - w;
       int dy = r - h;
       int offset_x = (dx + x) % WIDTH;
+      int offset_y = dy + y;
       if (
         ((dx*dx) + (dy*dy) > r*r)
         || (offset_x < 0)
         || ((dx + x) >= WIDTH)
       )
         continue;
-      
-      // get corresponding index into memory
-      int index = (
-        ((dy + y) * WIDTH) + offset_x
-      ) * (BPP/8);
-      if (index < 0) continue;
-      if (index > WIDTH * HEIGHT * (BPP/8)) continue;
 
-      // draw provided color at point
-      mem[index] = color & 0xff;
-      mem[index+1] = (color >> 8) & 0xff;
-      mem[index+2] = (color >> 16) & 0xff;
+      color_pixel(mem, offset_x, dy + y, color);
     }
   }
 }
 
 void fill_segment(Uint8* mem, Point p1, Point p2, int r, Uint32 color) {
   last_mouse_point = curr_mouse_point; // debug
+
   float theta = SDL_atan2f(p2.y - p1.y, p2.x - p1.x);
-  float theta_perp = theta + PI/2;
-  float x_offs = r * SDL_cosf(theta_perp);
-  float y_offs = r * SDL_sinf(theta_perp);
-  PointF a = { p2.x + x_offs, p2.y + y_offs };
-  PointF b = { p1.x + x_offs, p1.y + y_offs };
-  PointF c = { p2.x - x_offs, p2.y - y_offs };
-  PointF d = { p1.x - x_offs, p1.y - y_offs };
-  PointF ab = { b.x - a.x, b.y - a.y };
-  PointF ac = { c.x - a.x, c.y - a.y };
-  float len1_sq = ab.x * ab.x + ab.y * ab.y;
-  float len2_sq = ac.x * ac.x + ac.y * ac.y;
 
-  int bound_upper = max(min(min(min(a.y, b.y), c.y), d.y), 0);
-  int bound_left = max(min(min(min(a.x, b.x), c.x), d.x), 0);
-  int bound_bottom = min(max(max(max(a.y, b.y), c.y), d.y), HEIGHT - 1);
-  int bound_right = min(max(max(max(a.x, b.x), c.x), d.x), WIDTH - 1);
+  if (r > 0) {
+    float theta_perp = theta + PI/2;
+    float x_offs = r * SDL_cosf(theta_perp);
+    float y_offs = r * SDL_sinf(theta_perp);
+    PointF a = { p2.x + x_offs, p2.y + y_offs };
+    PointF b = { p1.x + x_offs, p1.y + y_offs };
+    PointF c = { p2.x - x_offs, p2.y - y_offs };
+    PointF d = { p1.x - x_offs, p1.y - y_offs };
+    PointF ab = { b.x - a.x, b.y - a.y };
+    PointF ac = { c.x - a.x, c.y - a.y };
+    float len1_sq = ab.x * ab.x + ab.y * ab.y;
+    float len2_sq = ac.x * ac.x + ac.y * ac.y;
 
-  for (int row = bound_upper; row <= bound_bottom; row++) {
-    for (int col = bound_left; col <= bound_right; col++) {
-      Point p = { col, row };
-      PointF ap = { p.x - a.x, p.y - a.y };
-      float dot1 = ab.x * ap.x + ab.y * ap.y;
-      float dot2 = ac.x * ap.x + ac.y * ap.y;
+    int bound_upper = max(min(min(min(a.y, b.y), c.y), d.y), 0);
+    int bound_left = max(min(min(min(a.x, b.x), c.x), d.x), 0);
+    int bound_bottom = min(max(max(max(a.y, b.y), c.y), d.y), HEIGHT - 1);
+    int bound_right = min(max(max(max(a.x, b.x), c.x), d.x), WIDTH - 1);
 
-      if (0 <= dot1 && dot1 <= len1_sq && 0 <= dot2 && dot2 <= len2_sq) {
-        mem[(row * WIDTH * BPP/8) + (col * BPP/8)] = 0;
-        mem[(row * WIDTH * BPP/8) + (col * BPP/8) + 1] = 0;
-        mem[(row * WIDTH * BPP/8) + (col * BPP/8) + 2] = 0;
+    for (int row = bound_upper; row <= bound_bottom; row++) {
+      for (int col = bound_left; col <= bound_right; col++) {
+        Point p = { col, row };
+        PointF ap = { p.x - a.x, p.y - a.y };
+        float dot1 = ab.x * ap.x + ab.y * ap.y;
+        float dot2 = ac.x * ap.x + ac.y * ap.y;
+
+        if (0 <= dot1 && dot1 <= len1_sq && 0 <= dot2 && dot2 <= len2_sq) {
+          color_pixel(mem, col, row, color);
+        }
       }
+    }
+  } else {
+    // draw a 1px-thick line from p1 to p2
+    float x_offs = SDL_cosf(theta);
+    float y_offs = SDL_sinf(theta);
+
+    Point curr_pixel = { p1.x, p1.y };
+    PointF virtual_draw_point = { p1.x + 0.5f, p1.y + 0.5f };
+
+    while (curr_pixel.x != p2.x || curr_pixel.y != p2.y) {
+      // update virtual 2D point in line by one unit
+      virtual_draw_point.x += x_offs;
+      virtual_draw_point.y += y_offs;
+      
+      // update the integer version
+      curr_pixel.x = SDL_floorf(virtual_draw_point.x);
+      curr_pixel.y = SDL_floorf(virtual_draw_point.y);
+
+      // fill in that pixel
+      color_pixel(mem, curr_pixel.x, curr_pixel.y, color);
     }
   }
 }
@@ -127,7 +152,7 @@ void fill_segment(Uint8* mem, Point p1, Point p2, int r, Uint32 color) {
 // mouse event handlers
 bool mouse_callback(int eventType, const EmscriptenMouseEvent* e, void* userData) {
   if (eventType == EMSCRIPTEN_EVENT_MOUSEDOWN) {
-    last_mouse_point = curr_mouse_point; // debug
+    last_mouse_point = curr_mouse_point;
     mouse_button_down = e->button == 0
       ? MouseButtonLeft
       : MouseButtonRight;
