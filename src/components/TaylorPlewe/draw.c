@@ -1,6 +1,6 @@
 // 2025 Taylor Plewe
 //
-// once emscripten is installed build with:
+// once emscripten is installed, build with:
 //   emcc draw.c -o draw.js \
 //   -O3 \
 //   -s EXPORT_ES6=1 \
@@ -10,7 +10,6 @@
 //   -s EXPORTED_FUNCTIONS='_get_match_percentage,_read_target_pixel_data,_malloc,_free,_main' \
 //   -s EXPORTED_RUNTIME_METHODS='cwrap,ccall,HEAPU8'
 
-#include "SDL_stdinc.h"
 #include <SDL.h>
 #include <emscripten.h>
 #include <emscripten/html5.h>
@@ -86,35 +85,36 @@ void fill_circle(Uint8* mem, int x, int y, int r, Uint32 color) {
       )
         continue;
 
-      color_pixel(mem, offset_x, dy + y, color);
+      color_pixel(mem, offset_x, offset_y, color);
     }
   }
 }
 
 void fill_segment(Uint8* mem, Point p1, Point p2, int r, Uint32 color) {
-  last_mouse_point = curr_mouse_point; // debug
+  last_mouse_point = curr_mouse_point;
 
   float theta = SDL_atan2f(p2.y - p1.y, p2.x - p1.x);
 
   if (r > 0) {
-    float theta_perp = theta + PI/2;
-    float x_offs = r * SDL_cosf(theta_perp);
-    float y_offs = r * SDL_sinf(theta_perp);
-    PointF a = { p2.x + x_offs, p2.y + y_offs };
-    PointF b = { p1.x + x_offs, p1.y + y_offs };
-    PointF c = { p2.x - x_offs, p2.y - y_offs };
-    PointF d = { p1.x - x_offs, p1.y - y_offs };
-    PointF ab = { b.x - a.x, b.y - a.y };
-    PointF ac = { c.x - a.x, c.y - a.y };
-    float len1_sq = ab.x * ab.x + ab.y * ab.y;
-    float len2_sq = ac.x * ac.x + ac.y * ac.y;
+    // fill in a rotated rectangle with a thickness of r from p1 to p2
+    float  theta_perp = theta + PI/2;
+    float  x_offs     = r * SDL_cosf(theta_perp);
+    float  y_offs     = r * SDL_sinf(theta_perp);
+    PointF a          = { p2.x + x_offs, p2.y + y_offs };
+    PointF b          = { p1.x + x_offs, p1.y + y_offs };
+    PointF c          = { p2.x - x_offs, p2.y - y_offs };
+    PointF d          = { p1.x - x_offs, p1.y - y_offs };
+    PointF ab         = { b.x - a.x, b.y - a.y };
+    PointF ac         = { c.x - a.x, c.y - a.y };
+    float  len1_sq    = (ab.x*ab.x) + (ab.y*ab.y);
+    float  len2_sq    = (ac.x*ac.x) + (ac.y*ac.y);
 
-    int bound_upper = max(min(min(min(a.y, b.y), c.y), d.y), 0);
-    int bound_left = max(min(min(min(a.x, b.x), c.x), d.x), 0);
+    int bound_top    = max(min(min(min(a.y, b.y), c.y), d.y), 0);
+    int bound_left   = max(min(min(min(a.x, b.x), c.x), d.x), 0);
     int bound_bottom = min(max(max(max(a.y, b.y), c.y), d.y), HEIGHT - 1);
-    int bound_right = min(max(max(max(a.x, b.x), c.x), d.x), WIDTH - 1);
+    int bound_right  = min(max(max(max(a.x, b.x), c.x), d.x), WIDTH - 1);
 
-    for (int row = bound_upper; row <= bound_bottom; row++) {
+    for (int row = bound_top; row <= bound_bottom; row++) {
       for (int col = bound_left; col <= bound_right; col++) {
         Point p = { col, row };
         PointF ap = { p.x - a.x, p.y - a.y };
