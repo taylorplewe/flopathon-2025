@@ -59,7 +59,7 @@ typedef struct PointF {
 Point curr_mouse_point;
 Point last_mouse_point;
 
-void color_pixel(Uint8* mem, int x, int y, Uint32 color) {
+static inline void color_pixel(Uint8* mem, int x, int y, Uint32 color) {
   int index = ((y * WIDTH) + x) * BPP/8;
   if (index < 0 || index >= WIDTH * HEIGHT * (BPP/8)) return;
   int r =  color        & 0xff;
